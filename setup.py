@@ -1,23 +1,28 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
 from codecs import open
 from setuptools import find_packages, setup
 from cloudscale import __version__
 
-install_requires = ['requests', 'click', 'tabulate']
+install_requires = []
+with open("requirements.txt", "r", encoding="utf-8") as f:
+    install_requires = list(i.rstrip() for i in f.readlines())
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="cloudscale-cli",
+    name="python-cloudscale",
     version=__version__,
-    author="Rene Moser",
+    author="René Moser",
     author_email="mail@renemoser.net",
-    description="A command line interface for cloudscale.ch",
+    description="A library and command line interface for cloudscale.ch",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/resmo/cloudscale-cli",
+    url="https://gitlab.com/resmo/python-cloudscale",
     packages=find_packages(),
     classifiers=(
         "Programming Language :: Python :: 3",

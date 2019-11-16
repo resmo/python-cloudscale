@@ -1,3 +1,4 @@
+import json
 from click import Group
 from collections import OrderedDict
 from tabulate import tabulate
@@ -21,9 +22,39 @@ def to_table(data, headers):
         rows = list()
         for header in headers:
             if header in d:
-                row = d[header]
+                if header == 'tags':
+                    row = ', '.join(['%s=%s' % (k, v) for k, v in d[header].items()])
+                elif isinstance(d[header], dict):
+                    if 'name' in d[header]:
+                        row = d[header]['name']
+                    elif 'slug' in d[header]:
+                        row = d[header]['slug']
+                    else:
+                        row = d[header]
+                elif isinstance(d[header], list):
+                    row = ', '.join([i['slug'] for i in d[header] if 'slug' in i])
+                else:
+                    row = d[header]
                 rows.append(row)
         cols.append(rows)
 
     result = tabulate(cols, headers=headers)
+    return result
+
+def to_pretty_json(data):
+
+    result = json.dumps(data, sort_keys=True, indent=4)
+    try:
+        from pygments import highlight, lexers, formatters
+        result = highlight(unicode(result, 'UTF-8'), lexers.JsonLexer(), formatters.TerminalFormatter())
+    except ImportError:
+        pass
+    return result
+
+def to_dict(data):
+    result = dict()
+    for d in data:
+        if '=' in d:
+            k, v = d.split('=')
+            result[k] = v
     return result
