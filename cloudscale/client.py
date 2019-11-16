@@ -3,8 +3,9 @@
 from __future__ import print_function
 
 import os
-import requests
 import json
+import requests
+from urllib import urlencode
 
 class RestAPI(object):
 
@@ -13,35 +14,46 @@ class RestAPI(object):
         '''
         self.endpoint = endpoint
         self.headers = {
-            'Authorization': 'Bearer %s' % api_key
+            'Authorization': 'Bearer %s' % api_key,
+            'Content-type': 'application/json',
         }
 
     def _return_result(self, r):
         '''
         '''
 
-        pretty_json = None
-        if r.text:
-            pretty_json = json.loads(r.text)
-
         result = {
             'status_code': r.status_code,
-            'data': pretty_json
         }
-        # return json.dumps(result, indent=4)
+
+        try:
+            result['data'] = r.json()
+        except ValueError:
+            result['data'] = None
+
         return result
 
-    def get_resources(self, resource, resource_id=None):
+    def get_resources(self, resource, payload=None, resource_id=None):
         '''
         '''
 
         if not resource:
             return {}
 
-
         query_url = self.endpoint + '/' + resource
         if resource_id:
             query_url = query_url + '/' + resource_id
+
+        # TODO: make this less ugly
+        if payload:
+            for k, v in payload.items():
+                if v is not None:
+                    data = "%s=%s" % (k, v)
+                else:
+                    data = k
+                break
+
+            query_url = query_url + '?' + data
 
         r = requests.get(query_url, headers=self.headers)
         return self._return_result(r)
@@ -60,12 +72,13 @@ class RestAPI(object):
                 data[k] = v
 
         query_url = self.endpoint + '/' + resource
-
+        print(json.dumps(data))
         if resource_id:
             query_url = query_url + '/' + resource_id
-            r = requests.patch(query_url, data=data, headers=self.headers)
+            r = requests.patch(query_url, json=data, headers=self.headers)
+
         else:
-            r = requests.post(query_url, data=data, headers=self.headers)
+            r = requests.post(query_url, json=data, headers=self.headers)
 
         return self._return_result(r)
 
