@@ -7,16 +7,25 @@ from .lib.floating_ip import FloatingIp
 from .lib.image import Image
 from .lib.region import Region
 from .lib.network import Network
+from .lib import CloudscaleApiException
 
 __metaclass__ = type
 
 __version__ = '0.0.1'
+
 APP_NAME = 'cloudscale-cli'
 CLOUDSCALE_API_ENDPOINT = 'https://api.cloudscale.ch/v1'
+
+class CloudscaleException(Exception):
+    pass
 
 class Cloudscale:
 
     def __init__(self, api_key, verbose=False):
+
+        if not api_key:
+            raise CloudscaleException("Missing API key: see -h for help")
+
         self.api_key = api_key
         self.verbose = verbose
         self.service_classes = {
@@ -37,8 +46,8 @@ class Cloudscale:
                 endpoint=CLOUDSCALE_API_ENDPOINT
             )
             obj = self.service_classes[name]()
-            obj.client = client
+            obj._client = client
             obj.verbose = self.verbose
             return obj
         except NameError as e:
-            raise
+            raise CloudscaleException(e)

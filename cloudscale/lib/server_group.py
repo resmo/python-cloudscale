@@ -12,12 +12,11 @@ class ServerGroup(CloudscaleMutable):
             'type': group_type,
             'tags': tags,
         }
-        return self.client.post_patch_resource(self.resource, payload=payload)
+        return super(ServerGroup, self).create(payload=payload)
 
     def update(self, uuid, name=None, tags=None):
         payload = {
             'name': name,
             'tags': tags,
         }
-        print(payload)
-        return self.client.post_patch_resource(self.resource, resource_id=uuid, payload=payload)
+        return super(ServerGroup, self).update(uuid=uuid, payload=payload)

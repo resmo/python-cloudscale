@@ -40,18 +40,20 @@ class Server(CloudscaleMutable):
             'user_data': user_data,
             'tags': tags,
         }
-        return self.client.post_patch_resource(self.resource, payload=payload)
+        return super(Server, self).create(payload=payload)
 
-    def update(
-        self,
-        uuid,
-        name=None,
-        flavor=None,
-        tags=None,
-    ):
+    def update(self, uuid, name=None, flavor=None, tags=None):
         payload = {
             'name': name,
             'flavor': flavor,
             'tags': tags,
         }
-        return self.client.post_patch_resource(self.resource, resource_id=uuid, payload=payload)
+        return super(Server, self).update(uuid=uuid, payload=payload)
+
+    def start(self, uuid):
+        result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='start')
+        return self._handle_exception(result)
+
+    def stop(self, uuid):
+        result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='stop')
+        return self._handle_exception(result)
