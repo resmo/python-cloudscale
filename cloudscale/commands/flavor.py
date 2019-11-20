@@ -19,12 +19,11 @@ def flavor(ctx, api_token, verbose):
 @click.pass_obj
 def cmd_list(cloudscale):
     try:
-        results = cloudscale.flavor.get_all()
-        data = results.get('data')
-        if data:
+        response = cloudscale.flavor.get_all()
+        if response:
             headers = ['name', 'vcpu_count', 'memory_gb', 'slug']
-            table = to_table(results.get('data'), headers)
+            table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(to_pretty_json(e.response), err=True)
         sys.exit(1)

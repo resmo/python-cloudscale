@@ -19,14 +19,13 @@ def floating_ip(ctx, api_token, verbose):
 @click.pass_obj
 def cmd_list(cloudscale):
     try:
-        results = cloudscale.floating_ip.get_all()
-        data = results.get('data')
-        if data:
+        response = cloudscale.floating_ip.get_all()
+        if response:
             headers = ['network', 'created_at', 'ip_version', 'server', 'reverse_ptr', 'href']
-            table = to_table(results.get('data'), headers)
+            table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(to_pretty_json(e.response), err=True)
         sys.exit(1)
 
 
@@ -35,10 +34,10 @@ def cmd_list(cloudscale):
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
     try:
-        results = cloudscale.floating_ip.get_by_uuid(uuid)
-        click.echo(to_pretty_json(results))
+        response = cloudscale.floating_ip.get_by_uuid(uuid)
+        click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(to_pretty_json(e.response), err=True)
         sys.exit(1)
 
 
@@ -51,10 +50,10 @@ def cmd_show(cloudscale, uuid):
 @click.pass_obj
 def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, tags):
     try:
-        results = cloudscale.floating_ip.create(ip_version, server_uuid, prefix_length, reverse_ptr, tags)
-        click.echo(to_pretty_json(results))
+        response = cloudscale.floating_ip.create(ip_version, server_uuid, prefix_length, reverse_ptr, tags)
+        click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(to_pretty_json(e.response), err=True)
         sys.exit(1)
 
 @click.option('--network-id', 'uuid', required=True)
@@ -62,8 +61,8 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
 @click.pass_obj
 def cmd_delete(cloudscale, uuid):
     try:
-        results = cloudscale.floating_ip.delete(uuid)
-        click.echo(to_pretty_json(results))
+        cloudscale.floating_ip.delete(uuid)
+        click.echo("Deleted!")
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(to_pretty_json(e.response), err=True)
         sys.exit(1)

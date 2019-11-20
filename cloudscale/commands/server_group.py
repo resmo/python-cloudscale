@@ -20,14 +20,13 @@ def server_group(ctx, api_token, verbose):
 @click.pass_obj
 def cmd_list(cloudscale, filter_tag):
     try:
-        results = cloudscale.server_group.get_all(filter_tag)
-        data = results.get('data')
-        if data:
+        response = cloudscale.server_group.get_all(filter_tag)
+        if response:
             headers = ['name', 'type', 'servers', 'tags', 'uuid']
-            table = to_table(results.get('data'), headers)
+            table = to_table(response, headers)
         click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -35,10 +34,10 @@ def cmd_list(cloudscale, filter_tag):
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
     try:
-        results = cloudscale.server_group.get_by_uuid(uuid)
-        click.echo(to_pretty_json(results))
+        response = cloudscale.server_group.get_by_uuid(uuid)
+        click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 @click.option('--name', required=True)
@@ -48,10 +47,10 @@ def cmd_show(cloudscale, uuid):
 @click.pass_obj
 def cmd_create(cloudscale, name, group_type, tags):
     try:
-        results = cloudscale.server_group.create(name, group_type, to_dict(tags))
-        click.echo(to_pretty_json(results))
+        response = cloudscale.server_group.create(name, group_type, to_dict(tags))
+        click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -61,10 +60,11 @@ def cmd_create(cloudscale, name, group_type, tags):
 @click.pass_obj
 def cmd_update(cloudscale, uuid, name, tags):
     try:
-        results = cloudscale.server_group.update(uuid, name, to_dict(tags))
-        click.echo(to_pretty_json(results))
+        cloudscale.server_group.update(uuid, name, to_dict(tags))
+        response = cloudscale.server_group.get_by_uuid(uuid)
+        click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -72,8 +72,8 @@ def cmd_update(cloudscale, uuid, name, tags):
 @click.pass_obj
 def cmd_delete(cloudscale, uuid):
     try:
-        results = cloudscale.server_group.delete(uuid)
-        click.echo(to_pretty_json(results))
+        cloudscale.server_group.delete(uuid)
+        click.echo("Deleted!")
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.result), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
