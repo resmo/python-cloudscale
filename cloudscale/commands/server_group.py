@@ -24,7 +24,7 @@ def cmd_list(cloudscale, filter_tag):
         if response:
             headers = ['name', 'type', 'servers', 'tags', 'uuid']
             table = to_table(response, headers)
-        click.echo(table)
+            click.echo(table)
     except CloudscaleApiException as e:
         click.echo(e, err=True)
         sys.exit(1)
