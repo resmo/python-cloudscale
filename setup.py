@@ -15,7 +15,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="python-cloudscale",
+    name="cloudscale",
     version=__version__,
     author="René Moser",
     author_email="mail@renemoser.net",
@@ -25,13 +25,13 @@ setup(
     long_description_content_type="text/markdown",
     url="https://gitlab.com/resmo/python-cloudscale",
     packages=find_packages(),
-    classifiers=(
+    classifiers=[
         "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Environment :: Console",
-    ),
+    ],
     install_requires=install_requires,
     entry_points={
         'console_scripts': [
