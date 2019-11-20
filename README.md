@@ -1,6 +1,7 @@
 # A Command Line Interface and Python Module for cloudscale.ch
 
-## Setup
+## Install
+
 ~~~
 pip3 install cloudscale
 ~~~
@@ -44,7 +45,7 @@ cloudscale-cli server list --filter-tag project=gemini
 
 ## Usage in Python
 
-### List the slug of all flavorsV
+### List the slug of all flavors
 ~~~python
 import os
 from cloudscale import Cloudscale, CloudscaleApiException
