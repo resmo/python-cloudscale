@@ -11,7 +11,7 @@ from .error import CloudscaleException, CloudscaleApiException # noqa F401
 
 __metaclass__ = type
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 APP_NAME = 'cloudscale-cli'
 CLOUDSCALE_API_ENDPOINT = 'https://api.cloudscale.ch/v1'
