@@ -5,9 +5,9 @@ from collections import OrderedDict
 from tabulate import tabulate
 
 class OrderedGroup(Group):
-    """
+    '''
     A click Group with ordered command list.
-    """
+    '''
 
     def __init__(self, name=None, commands=[], **attrs):
         Group.__init__(self, name, **attrs)
@@ -17,7 +17,11 @@ class OrderedGroup(Group):
         return self.commands.keys()
 
 
-def to_table(data, headers):
+def to_table(data: list, headers: list) -> str:
+    '''
+    Turn a list into a table
+    '''
+
     cols = list()
     for d in data:
         rows = list()
@@ -42,17 +46,22 @@ def to_table(data, headers):
     result = tabulate(cols, headers=headers)
     return result
 
-def to_pretty_json(data):
-
+def to_pretty_json(data: dict) -> tuple:
+    '''
+    Format JSON to human readable.
+    '''
     result = json.dumps(data, sort_keys=True, indent=4)
     try:
         from pygments import highlight, lexers, formatters
-        result = highlight(unicode(result, 'UTF-8'), lexers.JsonLexer(), formatters.TerminalFormatter())
+        result = highlight(result, lexers.JsonLexer(), formatters.TerminalFormatter())
     except ImportError:
         pass
     return result
 
-def to_dict(data):
+def to_dict(data: tuple) -> dict:
+    '''
+    Split a tuple of tags (key=value) into a dict.
+    '''
     result = dict()
     for d in data:
         if '=' in d:

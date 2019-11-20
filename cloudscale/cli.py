@@ -16,6 +16,7 @@ from .commands.network import network
 def cli():
     pass
 
+
 cli.add_command(cmd_version)
 cli.add_command(server)
 cli.add_command(server_group)

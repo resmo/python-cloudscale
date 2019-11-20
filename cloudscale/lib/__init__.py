@@ -1,6 +1,5 @@
-__metaclass__ = type
-
 class CloudscaleApiException(Exception):
+
     def __init__(self, *args, **kwargs):
         self.result = kwargs.pop('result')
         self.message = kwargs.pop('message')

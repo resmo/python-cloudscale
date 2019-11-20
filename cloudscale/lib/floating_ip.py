@@ -21,4 +21,4 @@ class FloatingIp(CloudscaleMutable):
             'server': server_uuid,
             'tags': tags,
         }
-        return super(FloatingIp, self).create(payload=payload)
+        return super().create(payload=payload)

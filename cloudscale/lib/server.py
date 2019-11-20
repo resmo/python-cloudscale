@@ -3,7 +3,7 @@ from . import CloudscaleMutable
 class Server(CloudscaleMutable):
 
     def __init__(self):
-        super(Server, self).__init__()
+        super().__init__()
         self.resource = 'servers'
 
     def create(
@@ -40,7 +40,7 @@ class Server(CloudscaleMutable):
             'user_data': user_data,
             'tags': tags,
         }
-        return super(Server, self).create(payload=payload)
+        return super().create(payload=payload)
 
     def update(self, uuid, name=None, flavor=None, tags=None):
         payload = {
@@ -48,7 +48,7 @@ class Server(CloudscaleMutable):
             'flavor': flavor,
             'tags': tags,
         }
-        return super(Server, self).update(uuid=uuid, payload=payload)
+        return super().update(uuid=uuid, payload=payload)
 
     def start(self, uuid):
         result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='start')
