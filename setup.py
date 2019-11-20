@@ -25,9 +25,11 @@ setup(
     url="https://gitlab.com/resmo/python-cloudscale",
     packages=find_packages(),
     classifiers=(
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GPLv3",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Environment :: Console",
     ),
     install_requires=install_requires,
     entry_points={
