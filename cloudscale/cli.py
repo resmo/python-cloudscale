@@ -11,11 +11,10 @@ from .commands.network import network
 
 
 @click.group(cls=OrderedGroup, context_settings={
-    "help_option_names": ["-h", "--help"],
+    'help_option_names': ['-h', '--help'],
 })
 def cli():
     pass
-
 
 cli.add_command(cmd_version)
 cli.add_command(server)

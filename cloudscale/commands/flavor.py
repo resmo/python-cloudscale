@@ -20,9 +20,11 @@ def flavor(ctx, api_key, verbose):
 def cmd_list(cloudscale):
     try:
         results = cloudscale.flavor.get_all()
-        headers = ['name', 'vcpu_count', 'memory_gb', 'slug']
-        table = to_table(results.get('data'), headers)
-        click.echo(table)
+        data = results.get('data')
+        if data:
+            headers = ['name', 'vcpu_count', 'memory_gb', 'slug']
+            table = to_table(results.get('data'), headers)
+            click.echo(table)
     except CloudscaleApiException as e:
         click.echo(to_pretty_json(e.result), err=True)
         sys.exit(1)

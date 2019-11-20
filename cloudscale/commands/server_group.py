@@ -21,8 +21,10 @@ def server_group(ctx, api_key, verbose):
 def cmd_list(cloudscale, filter_tag):
     try:
         results = cloudscale.server_group.get_all(filter_tag)
-        headers = ['name', 'type', 'servers', 'tags', 'uuid']
-        table = to_table(results.get('data'), headers)
+        data = results.get('data')
+        if data:
+            headers = ['name', 'type', 'servers', 'tags', 'uuid']
+            table = to_table(results.get('data'), headers)
         click.echo(table)
     except CloudscaleApiException as e:
         click.echo(to_pretty_json(e.result), err=True)
