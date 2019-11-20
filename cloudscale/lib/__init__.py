@@ -11,11 +11,19 @@ class CloudscaleBase:
         self._client = None
         self.resource = None
 
-    def _handle_exception(self, result):
-        if result.get('status_code') not in (200, 201, 204):
-            message = result.get('data', dict()).get('detail', 'Unknown error')
-            raise CloudscaleApiException(message=message, result=result)
-        return result
+    def _process_response(self, response):
+        status_code = response.get('status_code')
+        data = response.get('data', dict())
+        if status_code not in (200, 201, 204):
+            raise CloudscaleApiException(
+                "API Response Error ({0}): {1}".format(
+                    status_code,
+                    data.get('detail', 'Unknown error.'),
+                ),
+                response=response,
+                status_code=status_code,
+            )
+        return data
 
     def get_all(self, filter_tag=None):
         if filter_tag is not None:
@@ -35,23 +43,23 @@ class CloudscaleBase:
             payload = None
 
         result = self._client.get_resources(self.resource, payload=payload)
-        return self._handle_exception(result)
+        return self._process_response(result) or []
 
 
 class CloudscaleMutable(CloudscaleBase):
 
     def get_by_uuid(self, uuid):
-        result = self._client.get_resources(self.resource, resource_id=uuid)
-        return self._handle_exception(result)
+        response = self._client.get_resources(self.resource, resource_id=uuid)
+        return self._process_response(response)
 
     def delete(self, uuid):
-        result = self._client.delete_resource(self.resource, resource_id=uuid)
-        return self._handle_exception(result)
+        response = self._client.delete_resource(self.resource, resource_id=uuid)
+        return self._process_response(response)
 
     def update(self, uuid, payload):
-        result = self._client.post_patch_resource(self.resource, resource_id=uuid, payload=payload)
-        return self._handle_exception(result)
+        response = self._client.post_patch_resource(self.resource, resource_id=uuid, payload=payload)
+        return self._process_response(response)
 
     def create(self, payload):
-        result = self._client.post_patch_resource(self.resource, payload=payload)
-        return self._handle_exception(result)
+        response = self._client.post_patch_resource(self.resource, payload=payload)
+        return self._process_response(response)

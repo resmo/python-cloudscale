@@ -52,8 +52,8 @@ class Server(CloudscaleMutable):
 
     def start(self, uuid):
         result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='start')
-        return self._handle_exception(result)
+        return self._process_response(result)
 
     def stop(self, uuid):
         result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='stop')
-        return self._handle_exception(result)
+        return self._process_response(result)
