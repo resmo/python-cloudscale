@@ -7,7 +7,7 @@ from .lib.floating_ip import FloatingIp
 from .lib.image import Image
 from .lib.region import Region
 from .lib.network import Network
-from .lib import CloudscaleApiException
+from .error import CloudscaleException, CloudscaleApiException # noqa F401
 
 __metaclass__ = type
 
@@ -16,8 +16,6 @@ __version__ = '0.0.1'
 APP_NAME = 'cloudscale-cli'
 CLOUDSCALE_API_ENDPOINT = 'https://api.cloudscale.ch/v1'
 
-class CloudscaleException(Exception):
-    pass
 
 class Cloudscale:
 
