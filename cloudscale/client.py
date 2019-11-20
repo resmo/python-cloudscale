@@ -31,7 +31,7 @@ class RestAPI:
                 data[k] = v
         return data
 
-    def get_resources(self, resource, payload, resource_id=None):
+    def get_resources(self, resource, payload=None, resource_id=None):
         if not resource:
             return {}
 
