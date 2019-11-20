@@ -21,12 +21,12 @@ class CloudscaleException(Exception):
 
 class Cloudscale:
 
-    def __init__(self, api_key, verbose=False):
+    def __init__(self, api_token, verbose=False):
 
-        if not api_key:
+        if not api_token:
             raise CloudscaleException("Missing API key: see -h for help")
 
-        self.api_key = api_key
+        self.api_token = api_token
         self.verbose = verbose
         self.service_classes = {
             'server': Server,
@@ -42,7 +42,7 @@ class Cloudscale:
     def __getattr__(self, name):
         try:
             client = RestAPI(
-                api_key=self.api_key,
+                api_token=self.api_token,
                 endpoint=CLOUDSCALE_API_ENDPOINT
             )
             obj = self.service_classes[name]()

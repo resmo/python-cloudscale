@@ -8,9 +8,10 @@ class RestAPI(object):
         '''
         '''
 
+    def __init__(self, endpoint, api_token):
         self.endpoint = endpoint
         self.headers = {
-            'Authorization': 'Bearer %s' % api_key,
+            'Authorization': 'Bearer %s' % api_token,
             'Content-type': 'application/json',
         }
 

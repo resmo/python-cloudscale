@@ -4,12 +4,12 @@ from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 
 @click.group()
-@click.option('--api-key', '-a', envvar='CLOUDSCALE_TOKEN')
+@click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token")
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def server_group(ctx, api_key, verbose):
+def server_group(ctx, api_token, verbose):
     try:
-        ctx.obj = Cloudscale(api_key)
+        ctx.obj = Cloudscale(api_token)
         ctx.obj.verbose = verbose
     except CloudscaleException as e:
         click.echo(e, err=True)
