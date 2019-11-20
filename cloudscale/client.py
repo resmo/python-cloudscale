@@ -65,7 +65,7 @@ class RestAPI:
                 r = requests.post(query_url, json=data, headers=self.headers)
                 return self._return_result(r)
 
-            r = requests.post(query_url, json=data, headers=self.headers)
+            r = requests.patch(query_url, json=data, headers=self.headers)
             return self._return_result(r)
         else:
             r = requests.post(query_url, json=data, headers=self.headers)
