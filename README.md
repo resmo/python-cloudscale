@@ -1,7 +1,7 @@
 ![license](https://img.shields.io/pypi/l/cloudscale.svg)
 ![python versions](https://img.shields.io/pypi/pyversions/cloudscale.svg)
 ![status](https://img.shields.io/pypi/status/cloudscale.svg)
-![pypi version](https://img.shields.io/pypi/v/cloudscale.svg)
+[![pypi version](https://img.shields.io/pypi/v/cloudscale.svg)](https://pypi.org/project/cloudscale/)
 
 # Cloudscale
 
@@ -14,6 +14,19 @@ pip3 install cloudscale
 ~~~
 
 ## Command Line Interface
+
+### Autocompletion
+
+zsh:
+~~~
+eval "$(_CLOUDSCALE_CLI_COMPLETE=source_zsh cloudscale-cli)"
+~~~
+
+bash:
+~~~
+eval "$(_CLOUDSCALE_CLI_COMPLETE=source cloudscale-cli)"
+~~~
+
 
 ### Authentication
 
