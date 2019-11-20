@@ -19,6 +19,7 @@ setup(
     version=__version__,
     author="René Moser",
     author_email="mail@renemoser.net",
+    license="MIT",
     description="A library and command line interface for cloudscale.ch",
     long_description=long_description,
     long_description_content_type="text/markdown",
