@@ -5,7 +5,7 @@
 
 # Cloudscale
 
-A cloudscale.ch API client for Python3 and your command line.
+A [cloudscale.ch](https://www.cloudscale.ch) API client for Python3 and your command line.
 
 ## Install
 
@@ -18,48 +18,69 @@ pip3 install cloudscale
 ### Autocompletion
 
 zsh:
-~~~
+~~~shell
 eval "$(_CLOUDSCALE_CLI_COMPLETE=source_zsh cloudscale-cli)"
 ~~~
 
 bash:
-~~~
+~~~shell
 eval "$(_CLOUDSCALE_CLI_COMPLETE=source cloudscale-cli)"
 ~~~
-
 
 ### Authentication
 
 Using the ENV `CLOUDSCALE_API_TOKEN` variable:
 
-~~~
+~~~shell
 export CLOUDSCALE_API_TOKEN=<your token>
 cloudscale-cli flavor list
 ~~~
 
 or by passing the `--api-token` parameter:
 
-~~~
+~~~shell
 cloudscale-cli server --api-token <your_token> create ...
+~~~
+
+## Help
+
+See all options:
+
+~~~shell
+$ cloudscale-cli --help
+Usage: cloudscale-cli [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  -h, --help  Show this message and exit.
+
+Commands:
+  version
+  server
+  server-group
+  floating-ip
+  flavor
+  image
+  region
+  network
 ~~~
 
 ### Usage Examples
 
 #### Create a Server
 
-~~~
+~~~shell
 cloudscale-cli server create --flavor flex-2 --name my-server --image centos-7 --ssh-keys "$(cat ~/.ssh/id_rsa.pub)"
 ~~~
 
 #### List all Servers
 
-~~~
+~~~shell
 cloudscale-cli server list
 ~~~
 
 #### Get Servers having the tag project=gemini
 
-~~~
+~~~shell
 cloudscale-cli server list --filter-tag project=gemini
 ~~~
 
@@ -94,7 +115,10 @@ for server in servers:
 
 ### Get resource by UUID
 ~~~python
+import os
 from cloudscale import Cloudscale, CloudscaleApiException
+
+api_token = os.getenv('CLOUDSCALE_API_TOKEN')
 
 try:
     cloudscale = Cloudscale(api_token=api_token)
@@ -106,7 +130,11 @@ except CloudscaleApiException as e:
 
 ### Error handling
 ~~~python
+import os
 from cloudscale import Cloudscale, CloudscaleApiException
+
+api_token = os.getenv('CLOUDSCALE_API_TOKEN')
+
 try:
     cloudscale = Cloudscale(api_token=api_token)
     server = cloudscale.server.get_by_uuid(uuid="does-not-exist")
