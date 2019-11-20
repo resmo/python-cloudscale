@@ -23,7 +23,7 @@ setup(
     description="A library and command line interface for cloudscale.ch",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.com/resmo/python-cloudscale",
+    url="https://github.com/resmo/python-cloudscale",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
