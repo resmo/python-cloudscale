@@ -1,4 +1,11 @@
-# A Command Line Interface and Python Module for cloudscale.ch
+![license](https://img.shields.io/pypi/l/cloudscale.svg)
+![python versions](https://img.shields.io/pypi/pyversions/cloudscale.svg)
+![status](https://img.shields.io/pypi/status/cloudscale.svg)
+![pypi version](https://img.shields.io/pypi/v/cloudscale.svg)
+
+# Cloudscale
+
+A cloudscale.ch API client for Python3 and your command line.
 
 ## Install
 
