@@ -33,6 +33,7 @@ setup(
         "Environment :: Console",
     ],
     install_requires=install_requires,
+    python_requires='>=3.6',
     entry_points={
         'console_scripts': [
             'cloudscale-cli = cloudscale.cli:cli',
