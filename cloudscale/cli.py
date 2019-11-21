@@ -8,6 +8,7 @@ from .commands.floating_ip import floating_ip
 from .commands.image import image
 from .commands.region import region
 from .commands.network import network
+from .commands.subnet import subnet
 
 
 @click.group(cls=OrderedGroup, context_settings={
@@ -25,3 +26,4 @@ cli.add_command(flavor)
 cli.add_command(image)
 cli.add_command(region)
 cli.add_command(network)
+cli.add_command(subnet)

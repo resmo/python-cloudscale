@@ -7,6 +7,8 @@ from .lib.floating_ip import FloatingIp
 from .lib.image import Image
 from .lib.region import Region
 from .lib.network import Network
+from .lib.subnet import Subnet
+
 from .error import CloudscaleException, CloudscaleApiException # noqa F401
 
 __metaclass__ = type
@@ -35,6 +37,7 @@ class Cloudscale:
             'image': Image,
             'region': Region,
             'network': Network,
+            'subnet': Subnet,
         }
 
     def __getattr__(self, name):

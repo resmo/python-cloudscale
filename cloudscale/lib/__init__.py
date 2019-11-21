@@ -42,11 +42,14 @@ class CloudscaleBase:
         return self._process_response(result) or []
 
 
-class CloudscaleMutable(CloudscaleBase):
+class CloudscaleBaseExt(CloudscaleBase):
 
     def get_by_uuid(self, uuid):
         response = self._client.get_resources(self.resource, resource_id=uuid)
         return self._process_response(response)
+
+
+class CloudscaleMutable(CloudscaleBaseExt):
 
     def delete(self, uuid):
         response = self._client.delete_resource(self.resource, resource_id=uuid)
