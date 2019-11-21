@@ -12,6 +12,7 @@ class FloatingIp(CloudscaleMutable):
         prefix_length=None,
         reverse_ptr=None,
         server_uuid=None,
+        region=None,
         tags=None,
     ):
         payload = {
@@ -19,6 +20,15 @@ class FloatingIp(CloudscaleMutable):
             'prefix_length': prefix_length,
             'reverse_ptr': reverse_ptr,
             'server': server_uuid,
+            'region': region,
             'tags': tags,
         }
         return super().create(payload=payload)
+
+    def update(self, uuid, reverse_ptr=None, server_uuid=None, tags=None):
+        payload = {
+            'reverse_ptr': reverse_ptr,
+            'server': server_uuid,
+            'tags': tags,
+        }
+        return super().update(uuid=uuid, payload=payload)
