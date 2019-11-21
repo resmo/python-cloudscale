@@ -25,5 +25,5 @@ def cmd_list(cloudscale):
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.response), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
