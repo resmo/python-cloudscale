@@ -8,6 +8,7 @@ from .lib.image import Image
 from .lib.region import Region
 from .lib.network import Network
 from .lib.subnet import Subnet
+from .lib.objects_user import ObjectsUser
 
 from .error import CloudscaleException, CloudscaleApiException # noqa F401
 
@@ -36,6 +37,7 @@ class Cloudscale:
             'region': Region,
             'network': Network,
             'subnet': Subnet,
+            'objects_user': ObjectsUser,
         }
 
     def __getattr__(self, name):
