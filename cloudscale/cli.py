@@ -9,6 +9,7 @@ from .commands.image import image
 from .commands.region import region
 from .commands.network import network
 from .commands.subnet import subnet
+from .commands.volume import volume
 
 
 @click.group(cls=OrderedGroup, context_settings={
@@ -27,3 +28,4 @@ cli.add_command(image)
 cli.add_command(region)
 cli.add_command(network)
 cli.add_command(subnet)
+cli.add_command(volume)
