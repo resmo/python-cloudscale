@@ -25,7 +25,7 @@ def cmd_list(cloudscale):
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.response), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 
@@ -37,7 +37,7 @@ def cmd_show(cloudscale, uuid):
         response = cloudscale.floating_ip.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.response), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 
@@ -53,7 +53,7 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
         response = cloudscale.floating_ip.create(ip_version, server_uuid, prefix_length, reverse_ptr, tags)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.response), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
 
 @click.option('--network-id', 'uuid', required=True)
@@ -64,5 +64,5 @@ def cmd_delete(cloudscale, uuid):
         cloudscale.floating_ip.delete(uuid)
         click.echo("Deleted!")
     except CloudscaleApiException as e:
-        click.echo(to_pretty_json(e.response), err=True)
+        click.echo(e, err=True)
         sys.exit(1)
