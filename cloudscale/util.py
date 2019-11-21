@@ -62,6 +62,9 @@ def to_dict(data: tuple) -> dict:
     '''
     Split a tuple of tags (key=value) into a dict.
     '''
+    if not data:
+        return
+
     result = dict()
     for d in data:
         if '=' in d:
