@@ -55,7 +55,8 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
             prefix_length=prefix_length,
             reverse_ptr=reverse_ptr,
             region=region,
-            tags=tags)
+            tags=to_dict(tags),
+        )
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
         click.echo(e, err=True)
@@ -73,7 +74,8 @@ def cmd_update(cloudscale, uuid, server_uuid, reverse_ptr, tags):
             uuid=uuid,
             server_uuid=server_uuid,
             reverse_ptr=reverse_ptr,
-            tags=tags)
+            tags=to_dict(tags),
+        )
         response = cloudscale.floating_ip.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
