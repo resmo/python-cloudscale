@@ -14,7 +14,7 @@ class CloudscaleBase:
             raise CloudscaleApiException(
                 "API Response Error ({0}): {1}".format(
                     status_code,
-                    data.get('detail', 'Unknown error.'),
+                    data.get('detail', data),
                 ),
                 response=response,
                 status_code=status_code,
