@@ -7,10 +7,12 @@
 
 A [cloudscale.ch](https://www.cloudscale.ch) API client for Python3 and your command line.
 
-## Install
+## Install / Update
 
 ~~~
-pip3 install cloudscale
+pip3 install -U cloudscale --user
+export PATH=$PATH:$HOME/.local/bin
+cloudscale-cli version
 ~~~
 
 ## Command Line Interface
