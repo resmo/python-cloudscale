@@ -2,6 +2,7 @@
 ![python versions](https://img.shields.io/pypi/pyversions/cloudscale.svg)
 ![status](https://img.shields.io/pypi/status/cloudscale.svg)
 [![pypi version](https://img.shields.io/pypi/v/cloudscale.svg)](https://pypi.org/project/cloudscale/)
+![PyPI - Downloads](https://img.shields.io/pypi/dw/cloudscale)
 
 # Cloudscale
 
