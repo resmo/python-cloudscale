@@ -136,7 +136,7 @@ def cmd_delete(cloudscale, uuid):
 def cmd_start(cloudscale, uuid):
     try:
         cloudscale.server.start(uuid)
-        response = cloudscale.server.start(uuid)
+        response = cloudscale.server.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
         click.echo(e, err=True)
@@ -148,7 +148,7 @@ def cmd_start(cloudscale, uuid):
 def cmd_stop(cloudscale, uuid):
     try:
         cloudscale.server.stop(uuid)
-        response = cloudscale.server.stop(uuid)
+        response = cloudscale.server.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
         click.echo(e, err=True)
