@@ -57,3 +57,7 @@ class Server(CloudscaleMutable):
     def stop(self, uuid):
         result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='stop')
         return self._process_response(result)
+
+    def reboot(self, uuid):
+        result = self._client.post_patch_resource(self.resource, resource_id=uuid, action='reboot')
+        return self._process_response(result)

@@ -247,3 +247,30 @@ def test_server_stop():
         uuid,
     ])
     assert result.exit_code == 0
+
+@responses.activate
+def test_server_reboot():
+    uuid = "47cec963-fcd2-482f-bdb6-24461b2d47b1"
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/reboot',
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+
+    cloudscale = Cloudscale(api_token="token")
+    server = cloudscale.server.reboot(uuid=uuid)
+    assert server is None
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'reboot',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code == 0

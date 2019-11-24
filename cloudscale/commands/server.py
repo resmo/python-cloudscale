@@ -153,3 +153,15 @@ def cmd_stop(cloudscale, uuid):
     except CloudscaleApiException as e:
         click.echo(e, err=True)
         sys.exit(1)
+
+@click.option('--uuid', required=True)
+@server.command("reboot")
+@click.pass_obj
+def cmd_reboot(cloudscale, uuid):
+    try:
+        cloudscale.server.reboot(uuid)
+        response = cloudscale.server.get_by_uuid(uuid)
+        click.echo(to_pretty_json(response))
+    except CloudscaleApiException as e:
+        click.echo(e, err=True)
+        sys.exit(1)
