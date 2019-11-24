@@ -6,7 +6,7 @@ class Network(CloudscaleMutable):
         super().__init__()
         self.resource = 'networks'
 
-    def create(self, name, zone, mtu=None, auto_create_ipv4_subnet=None, tags=None):
+    def create(self, name, zone=None, mtu=None, auto_create_ipv4_subnet=None, tags=None):
         payload = {
             'name': name,
             'zone': zone,

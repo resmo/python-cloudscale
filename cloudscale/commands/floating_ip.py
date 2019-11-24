@@ -1,6 +1,6 @@
 import sys
 import click
-from ..util import to_table, to_pretty_json
+from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 
 @click.group()

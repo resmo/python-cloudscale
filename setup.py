@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
-
-from codecs import open
 from setuptools import find_packages, setup
-from cloudscale import __version__
+
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 install_requires = []
 with open("requirements.txt", "r", encoding="utf-8") as f:
     install_requires = list(i.rstrip() for i in f.readlines())
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+extras_require = {
+    'highlight': ['pygments'],
+}
+
+tests_require = []
+with open("requirements.dev.txt", "r", encoding="utf-8") as f:
+    install_requires = list(i.rstrip() for i in f.readlines())
 
 setup(
     name="cloudscale",
-    version=__version__,
+    version="0.3.0",
     author="René Moser",
     author_email="mail@renemoser.net",
     license="MIT",
@@ -26,6 +30,8 @@ setup(
     url="https://github.com/resmo/python-cloudscale",
     packages=find_packages(),
     classifiers=[
+        "Intended Audience :: Developers",
+        "Intended Audience :: System Administrators",
         "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -33,6 +39,8 @@ setup(
         "Environment :: Console",
     ],
     install_requires=install_requires,
+    extras_require=extras_require,
+    tests_require=tests_require,
     python_requires='>=3.6',
     entry_points={
         'console_scripts': [
