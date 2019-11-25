@@ -48,6 +48,31 @@ def test_server_get_all():
     assert result.exit_code == 0
 
 @responses.activate
+def test_server_get_all_fitlered():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers',
+        json=[SERVER_RESP],
+        status=200)
+
+    cloudscale = Cloudscale(api_token="token")
+    servers = cloudscale.server.get_all(filter_tag='project=gemini')
+    assert servers[0]['name'] == "db-master"
+    assert servers[0]['uuid'] == "47cec963-fcd2-482f-bdb6-24461b2d47b1"
+    assert servers[0]['tags']['project'] == "gemini"
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server',
+        '-a',
+        'token',
+        'list',
+        '--filter-tag',
+        'project=gemini'
+    ])
+    assert result.exit_code == 0
+
+@responses.activate
 def test_server_get_by_uuid():
     uuid = "47cec963-fcd2-482f-bdb6-24461b2d47b1"
     responses.add(

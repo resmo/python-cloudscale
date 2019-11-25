@@ -39,11 +39,10 @@ class RestAPI:
         if resource_id:
             query_url = query_url + '/' + resource_id
 
-        # TODO: make this less ugly
         if payload:
             for k, v in payload.items():
                 if v is not None:
-                    data = "%s=%s" % (k, urlencode(v))
+                    data = urlencode({k: v})
                 else:
                     data = k
                 break
