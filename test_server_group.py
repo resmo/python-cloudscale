@@ -34,6 +34,16 @@ def test_server_groups_get_all():
         CLOUDSCALE_API_ENDPOINT + '/server-groups',
         json=[SERVER_GROUP_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups',
+        json=[SERVER_GROUP_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server_groups = cloudscale.server_group.get_all()
@@ -48,6 +58,13 @@ def test_server_groups_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_groups_get_by_uuid():
@@ -57,6 +74,16 @@ def test_server_groups_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
         json=SERVER_GROUP_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server_group = cloudscale.server_group.get_by_uuid(uuid=uuid)
@@ -72,6 +99,14 @@ def test_server_groups_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_groups_delete():
@@ -81,6 +116,14 @@ def test_server_groups_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server_group = cloudscale.server_group.delete(uuid=uuid)
@@ -95,6 +138,14 @@ def test_server_groups_delete():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_groups_create():
@@ -103,7 +154,17 @@ def test_server_groups_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/server-groups',
         json=SERVER_GROUP_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups',
+        json=SERVER_GROUP_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups',
+        json=SERVER_GROUP_RESP,
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.server_group.create(
@@ -118,6 +179,14 @@ def test_server_groups_create():
         name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_groups_update():
@@ -133,7 +202,21 @@ def test_server_groups_update():
         CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
         json=SERVER_GROUP_RESP,
         status=200)
-
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json={},
+        status=500)
     cloudscale = Cloudscale(api_token="token")
     server_group = cloudscale.server_group.update(uuid=uuid, name=name)
     assert server_group['name'] == name
@@ -150,3 +233,13 @@ def test_server_groups_update():
         name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'update',
+        '--uuid',
+        uuid,
+        '--name',
+        name,
+    ])
+    assert result.exit_code > 0

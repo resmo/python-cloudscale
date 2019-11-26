@@ -30,6 +30,16 @@ def test_network_get_all():
         CLOUDSCALE_API_ENDPOINT + '/networks',
         json=[NETWORK_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks',
+        json=[NETWORK_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     networks = cloudscale.network.get_all()
@@ -44,6 +54,13 @@ def test_network_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'network',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_network_get_by_uuid():
@@ -53,6 +70,16 @@ def test_network_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
         json=NETWORK_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json=NETWORK_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     network = cloudscale.network.get_by_uuid(uuid=uuid)
@@ -68,6 +95,14 @@ def test_network_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'network',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_network_delete():
@@ -77,6 +112,15 @@ def test_network_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     network = cloudscale.network.delete(uuid=uuid)
@@ -91,6 +135,14 @@ def test_network_delete():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'network',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_network_get_by_uuid_not_found():
@@ -117,7 +169,17 @@ def test_network_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/networks',
         json=NETWORK_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/networks',
+        json=NETWORK_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/networks',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.network.create(
@@ -133,6 +195,15 @@ def test_network_create():
         name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'network',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+    ])
+    assert result.exit_code > 0
+
 
 @responses.activate
 def test_network_update():
@@ -148,6 +219,21 @@ def test_network_update():
         CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
         json=NETWORK_RESP,
         status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json=NETWORK_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json=NETWORK_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     network = cloudscale.network.update(uuid=uuid, name=name)
@@ -165,3 +251,13 @@ def test_network_update():
         name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'network',
+        '-a', 'token',
+        'update',
+        '--uuid',
+        uuid,
+        '--name',
+        name,
+    ])
+    assert result.exit_code > 0

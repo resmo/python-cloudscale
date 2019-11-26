@@ -21,7 +21,16 @@ def test_region_get_all():
         CLOUDSCALE_API_ENDPOINT + '/regions',
         json=[REGION_RESP],
         status=200)
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/regions',
+        json=[REGION_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/regions',
+        json={},
+        status=500)
     cloudscale = Cloudscale(api_token="token")
     regions = cloudscale.region.get_all()
     assert regions[0]['slug'] == "rma"
@@ -34,3 +43,10 @@ def test_region_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'region',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0

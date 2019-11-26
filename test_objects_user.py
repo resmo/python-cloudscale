@@ -24,6 +24,16 @@ def test_objects_user_get_all():
         CLOUDSCALE_API_ENDPOINT + '/objects-users',
         json=[OBJECTS_USER_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json=[OBJECTS_USER_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     objects_users = cloudscale.objects_user.get_all()
@@ -38,6 +48,13 @@ def test_objects_user_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_objects_user_get_by_uuid():
@@ -47,7 +64,16 @@ def test_objects_user_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
         json=OBJECTS_USER_RESP,
         status=200)
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json=OBJECTS_USER_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json={},
+        status=500)
     cloudscale = Cloudscale(api_token="token")
     objects_user = cloudscale.objects_user.get_by_uuid(uuid=uuid)
     assert objects_user['display_name'] == "alan"
@@ -62,6 +88,14 @@ def test_objects_user_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_objects_user_delete():
@@ -71,6 +105,15 @@ def test_objects_user_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     objects_user = cloudscale.objects_user.delete(uuid=uuid)
@@ -85,6 +128,14 @@ def test_objects_user_delete():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_objects_user_get_by_uuid_not_found():
@@ -111,7 +162,17 @@ def test_objects_user_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/objects-users',
         json=OBJECTS_USER_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json=OBJECTS_USER_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.objects_user.create(
@@ -127,6 +188,14 @@ def test_objects_user_create():
         display_name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a', 'token',
+        'create',
+        '--display-name',
+        display_name,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_objects_user_update():
@@ -142,6 +211,21 @@ def test_objects_user_update():
         CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
         json=OBJECTS_USER_RESP,
         status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json=OBJECTS_USER_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json=OBJECTS_USER_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     objects_user = cloudscale.objects_user.update(uuid=uuid, display_name=display_name)
@@ -159,3 +243,13 @@ def test_objects_user_update():
         display_name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a', 'token',
+        'update',
+        '--uuid',
+        uuid,
+        '--display-name',
+        display_name,
+    ])
+    assert result.exit_code > 0

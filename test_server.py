@@ -31,6 +31,18 @@ def test_server_get_all():
         CLOUDSCALE_API_ENDPOINT + '/servers',
         json=[SERVER_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers',
+        json=[SERVER_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers',
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     servers = cloudscale.server.get_all()
@@ -46,6 +58,13 @@ def test_server_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_get_all_fitlered():
@@ -71,6 +90,15 @@ def test_server_get_all_fitlered():
         'project=gemini'
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a',
+        'token',
+        'list',
+        '--filter-tag',
+        'project'
+    ])
+    assert result.exit_code == 0
 
 @responses.activate
 def test_server_get_by_uuid():
@@ -80,6 +108,18 @@ def test_server_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         json=SERVER_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.get_by_uuid(uuid=uuid)
@@ -96,6 +136,14 @@ def test_server_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_delete():
@@ -105,6 +153,17 @@ def test_server_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.delete(uuid=uuid)
@@ -119,6 +178,14 @@ def test_server_delete():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_get_by_uuid_not_found():
@@ -154,6 +221,14 @@ def test_server_get_auth_not_provided():
         assert str(e) == "API Response Error (401): Authentication credentials were not provided."
 
 @responses.activate
+def test_server_missing_api_key():
+    try:
+        cloudscale = Cloudscale(api_token=None)
+        cloudscale.server.get_all()
+    except CloudscaleException as e:
+        assert str(e) == "Missing API key: see -h for help"
+
+@responses.activate
 def test_server_create():
     name = "db-master"
     flavor = "flex-4"
@@ -163,7 +238,19 @@ def test_server_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/servers',
         json=SERVER_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers',
+        json=SERVER_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers',
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.server.create(
@@ -185,6 +272,18 @@ def test_server_create():
         image
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+        '--flavor',
+        flavor,
+        '--image',
+        image
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_update():
@@ -200,6 +299,23 @@ def test_server_update():
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         json=SERVER_RESP,
         status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.update(uuid=uuid, name=name)
@@ -216,8 +332,22 @@ def test_server_update():
         uuid,
         '--name',
         name,
+        '--tags',
+        'project=gemini'
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'update',
+        '--uuid',
+        uuid,
+        '--name',
+        name,
+        '--tags',
+        'project=gemini'
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_start():
@@ -231,6 +361,22 @@ def test_server_start():
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         json=SERVER_RESP,
         status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/start',
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/start',
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.start(uuid=uuid)
@@ -245,6 +391,14 @@ def test_server_start():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'start',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_stop():
@@ -258,6 +412,22 @@ def test_server_stop():
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         json=SERVER_RESP,
         status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/stop',
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/stop',
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.stop(uuid=uuid)
@@ -272,6 +442,14 @@ def test_server_stop():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'stop',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_server_reboot():
@@ -285,6 +463,22 @@ def test_server_reboot():
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
         json=SERVER_RESP,
         status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/reboot',
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid + '/reboot',
+        json={
+            "detail": "Server error."
+        },
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.reboot(uuid=uuid)
@@ -299,3 +493,11 @@ def test_server_reboot():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'server',
+        '-a', 'token',
+        'reboot',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0

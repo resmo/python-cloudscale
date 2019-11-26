@@ -26,6 +26,16 @@ def test_flavor_get_all():
         CLOUDSCALE_API_ENDPOINT + '/flavors',
         json=[FLAVOR_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/flavors',
+        json=[FLAVOR_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/flavors',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     flavors = cloudscale.flavor.get_all()
@@ -40,3 +50,10 @@ def test_flavor_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'flavor',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0

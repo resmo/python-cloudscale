@@ -24,6 +24,16 @@ def test_subnet_get_all():
         CLOUDSCALE_API_ENDPOINT + '/subnets',
         json=[SUBNET_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/subnets',
+        json=[SUBNET_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/subnets',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     subnets = cloudscale.subnet.get_all()
@@ -37,6 +47,13 @@ def test_subnet_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'subnet',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_subnet_get_by_uuid():
@@ -46,6 +63,16 @@ def test_subnet_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/subnets/' + uuid,
         json=SUBNET_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/subnets/' + uuid,
+        json=SUBNET_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/subnets/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     subnet = cloudscale.subnet.get_by_uuid(uuid=uuid)
@@ -60,3 +87,11 @@ def test_subnet_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'subnet',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0

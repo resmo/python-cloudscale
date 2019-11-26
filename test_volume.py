@@ -27,6 +27,16 @@ def test_volume_get_all():
         CLOUDSCALE_API_ENDPOINT + '/volumes',
         json=[VOLUME_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes',
+        json=[VOLUME_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     volumes = cloudscale.volume.get_all()
@@ -41,6 +51,13 @@ def test_volume_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'volume',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_volume_get_by_uuid():
@@ -50,6 +67,17 @@ def test_volume_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
         json=VOLUME_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json=VOLUME_RESP,
+        status=200)
+
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     volume = cloudscale.volume.get_by_uuid(uuid=uuid)
@@ -65,6 +93,14 @@ def test_volume_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'volume',
+        '-a', 'token',
+        'show',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_volume_delete():
@@ -74,6 +110,15 @@ def test_volume_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     volume = cloudscale.volume.delete(uuid=uuid)
@@ -88,6 +133,14 @@ def test_volume_delete():
         uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'volume',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_volume_create():
@@ -99,7 +152,17 @@ def test_volume_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/volumes',
         json=VOLUME_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/volumes',
+        json=VOLUME_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/volumes',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.volume.create(
@@ -120,6 +183,18 @@ def test_volume_create():
         size_gb,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'volume',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+        '--server-uuids',
+        server_uuids,
+        '--size-gb',
+        size_gb,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_volume_update():
@@ -135,6 +210,21 @@ def test_volume_update():
         CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
         json=VOLUME_RESP,
         status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json=VOLUME_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json=VOLUME_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     volume = cloudscale.volume.update(uuid=uuid, name=name)
@@ -152,3 +242,13 @@ def test_volume_update():
         name,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'volume',
+        '-a', 'token',
+        'update',
+        '--uuid',
+        uuid,
+        '--name',
+        name,
+    ])
+    assert result.exit_code > 0

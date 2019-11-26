@@ -30,6 +30,16 @@ def test_floating_ip_get_all():
         CLOUDSCALE_API_ENDPOINT + '/floating-ips',
         json=[FLOATING_IP_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips',
+        json=[FLOATING_IP_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     floating_ips = cloudscale.floating_ip.get_all()
@@ -43,6 +53,13 @@ def test_floating_ip_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_floating_ip_get_by_uuid():
@@ -52,6 +69,16 @@ def test_floating_ip_get_by_uuid():
         CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
         json=FLOATING_IP_RESP,
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json=FLOATING_IP_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     floating_ip = cloudscale.floating_ip.get_by_uuid(uuid=network_id)
@@ -66,6 +93,14 @@ def test_floating_ip_get_by_uuid():
         network_id,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a', 'token',
+        'show',
+        '--network-id',
+        network_id,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_floating_ip_delete():
@@ -74,6 +109,15 @@ def test_floating_ip_delete():
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
         status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        status=204)
+    responses.add(
+        responses.DELETE,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     floating_ip = cloudscale.floating_ip.delete(uuid=network_id)
@@ -88,6 +132,14 @@ def test_floating_ip_delete():
         network_id,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a', 'token',
+        'delete',
+        '--network-id',
+        network_id,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_floating_ip_create():
@@ -97,7 +149,17 @@ def test_floating_ip_create():
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/floating-ips',
         json=FLOATING_IP_RESP,
-        status=204)
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips',
+        json=FLOATING_IP_RESP,
+        status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips',
+        json=FLOATING_IP_RESP,
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     cloudscale.floating_ip.create(
@@ -114,6 +176,16 @@ def test_floating_ip_create():
         server_uuid,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a', 'token',
+        'create',
+        '--ip-version',
+        ip_version,
+        '--server-uuid',
+        server_uuid,
+    ])
+    assert result.exit_code > 0
 
 @responses.activate
 def test_floating_ip_update():
@@ -129,6 +201,21 @@ def test_floating_ip_update():
         CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
         json=FLOATING_IP_RESP,
         status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json=FLOATING_IP_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json=FLOATING_IP_RESP,
+        status=200)
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     floating_ip = cloudscale.floating_ip.update(uuid=network_id, reverse_ptr=reverse_ptr)
@@ -146,3 +233,13 @@ def test_floating_ip_update():
         reverse_ptr,
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a', 'token',
+        'update',
+        '--network-id',
+        network_id,
+        '--reverse-ptr',
+        reverse_ptr,
+    ])
+    assert result.exit_code > 0

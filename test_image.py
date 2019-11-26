@@ -26,6 +26,16 @@ def test_image_get_all():
         CLOUDSCALE_API_ENDPOINT + '/images',
         json=[IMAGE_RESP],
         status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/images',
+        json=[IMAGE_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/images',
+        json={},
+        status=500)
 
     cloudscale = Cloudscale(api_token="token")
     images = cloudscale.image.get_all()
@@ -40,3 +50,10 @@ def test_image_get_all():
         'list',
     ])
     assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'image',
+        '-a',
+        'token',
+        'list',
+    ])
+    assert result.exit_code > 0
