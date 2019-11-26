@@ -20,7 +20,7 @@ with open("requirements.dev.txt", "r", encoding="utf-8") as f:
 
 setup(
     name="cloudscale",
-    version="0.5.1",
+    version="0.5.2",
     author="René Moser",
     author_email="mail@renemoser.net",
     license="MIT",
