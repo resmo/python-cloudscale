@@ -20,6 +20,7 @@ from .commands.objects_user import objects_user
 def cli():
     pass
 
+
 cli.add_command(cmd_version)
 cli.add_command(server)
 cli.add_command(server_group)

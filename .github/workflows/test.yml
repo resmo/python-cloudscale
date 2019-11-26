@@ -25,3 +25,5 @@ jobs:
         pip install tox tox-gh-actions
     - name: Test with tox
       run: tox
+    - name: GitHub Action for Flake8
+      uses: cclauss/GitHub-Action-for-Flake8@v0.5.0
