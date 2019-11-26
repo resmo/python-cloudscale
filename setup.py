@@ -16,7 +16,7 @@ extras_require = {
 
 tests_require = []
 with open("requirements.dev.txt", "r", encoding="utf-8") as f:
-    install_requires = list(i.rstrip() for i in f.readlines())
+    tests_require = list(i.rstrip() for i in f.readlines())
 
 setup(
     name="cloudscale",
@@ -28,7 +28,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/resmo/python-cloudscale",
-    packages=find_packages(),
+    packages=find_packages(exclude=["test.*", "tests"]),
     classifiers=[
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
