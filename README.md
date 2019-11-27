@@ -48,6 +48,32 @@ or by passing the `--api-token` parameter:
 cloudscale-cli server --api-token <your_token> create ...
 ~~~
 
+or by creating an ini file `.cloudscale.ini` (leading dot) in your `$HOME` or a `cloudscale.ini` (without leading dot) in the `CWD` with the following schema:
+
+~~~ini
+[default]
+api_token = <token>
+~~~
+
+The default profile taken if available is `default`. The profile can be chosen by passing `--profile` or `CLOUDSCALE_PROFILE` ENV variable.
+
+~~~
+export CLOUDSCALE_PROFILE=staging
+~~~
+
+~~~ini
+[production]
+api_token = <token>
+
+[staging]
+api_token = <token>
+~~~
+
+Passing the command line option will overwrite the ENV var as one would expect:
+~~~
+cloudscale-cli server --profile production list
+~~~
+
 ## Help
 
 See all options:

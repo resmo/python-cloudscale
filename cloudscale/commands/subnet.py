@@ -4,13 +4,13 @@ from ..util import to_table, to_pretty_json
 from .. import Cloudscale, CloudscaleException, CloudscaleApiException
 
 @click.group()
-@click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token")
+@click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
+@click.option('--profile', '-p', envvar='CLOUDSCALE_PROFILE', help="Profile used in config file.")
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def subnet(ctx, api_token, verbose):
+def subnet(ctx, profile, api_token, verbose):
     try:
-        ctx.obj = Cloudscale(api_token)
-        ctx.obj.verbose = verbose
+        ctx.obj = Cloudscale(api_token, profile, verbose)
     except CloudscaleException as e:
         click.echo(e, err=True)
         sys.exit(1)
@@ -27,7 +27,6 @@ def cmd_list(cloudscale):
     except CloudscaleApiException as e:
         click.echo(e, err=True)
         sys.exit(1)
-
 
 @click.option('--uuid', required=True)
 @subnet.command("show")

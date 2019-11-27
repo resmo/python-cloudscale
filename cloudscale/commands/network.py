@@ -4,13 +4,13 @@ from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 
 @click.group()
-@click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token")
+@click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
+@click.option('--profile', '-p', envvar='CLOUDSCALE_PROFILE', help="Profile used in config file.")
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def network(ctx, api_token, verbose):
+def network(ctx, profile, api_token, verbose):
     try:
-        ctx.obj = Cloudscale(api_token)
-        ctx.obj.verbose = verbose
+        ctx.obj = Cloudscale(api_token, profile, verbose)
     except CloudscaleException as e:
         click.echo(e, err=True)
         sys.exit(1)
