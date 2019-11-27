@@ -35,6 +35,8 @@ eval "$(_CLOUDSCALE_CLI_COMPLETE=source cloudscale-cli)"
 
 ### Authentication
 
+#### Evironment variable
+
 Using the ENV `CLOUDSCALE_API_TOKEN` variable:
 
 ~~~shell
@@ -42,13 +44,17 @@ export CLOUDSCALE_API_TOKEN=<your token>
 cloudscale-cli flavor list
 ~~~
 
-or by passing the `--api-token` parameter:
+#### Command line argument
+
+Passing the `--api-token` parameter:
 
 ~~~shell
 cloudscale-cli server --api-token <your_token> create ...
 ~~~
 
-or by creating an ini file `.cloudscale.ini` (leading dot) in your `$HOME` or a `cloudscale.ini` (without leading dot) in the `CWD` with the following schema:
+#### Config file
+
+Creating an ini file `.cloudscale.ini` (leading dot) in your `$HOME` or a `cloudscale.ini` (without leading dot) in the `CWD` with the following schema:
 
 ~~~ini
 [default]
