@@ -37,7 +37,13 @@ def to_table(data: list, headers: list) -> str:
                     else:
                         row = d[header]
                 elif isinstance(d[header], list):
-                    row = ', '.join([i['slug'] for i in d[header] if 'slug' in i])
+                    row_list = []
+                    for i in d[header]:
+                        if 'slug' in i:
+                            row_list.append(i['slug'])
+                        elif 'name' in i:
+                            row_list.append(i['name'])
+                    row = ', '.join(row_list)
                 else:
                     row = d[header]
                 rows.append(row)
