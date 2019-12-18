@@ -137,6 +137,15 @@ def test_server_groups_delete():
         '--uuid',
         uuid,
     ])
+    assert result.exit_code == 1
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+        '--force',
+    ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'server-group',

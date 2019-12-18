@@ -134,6 +134,16 @@ def test_network_delete():
         '--uuid',
         uuid,
     ])
+    assert result.exit_code == 1
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'network',
+        '-a', 'token',
+        'delete',
+        '--uuid',
+        uuid,
+        '--force',
+    ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'network',
