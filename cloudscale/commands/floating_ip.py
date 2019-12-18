@@ -22,7 +22,7 @@ def cmd_list(cloudscale):
     try:
         response = cloudscale.floating_ip.get_all()
         if response:
-            headers = ['network', 'ip_version', 'server', 'reverse_ptr', 'region', 'tags']
+            headers = ['network', 'ip_version', 'server', 'reverse_ptr', 'type', 'region', 'tags']
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
@@ -44,17 +44,19 @@ def cmd_show(cloudscale, uuid):
 @click.option('--server-uuid', '--server', required=True)
 @click.option('--prefix-length', default=32, show_default=True)
 @click.option('--reverse-ptr')
+@click.option('--type', 'scope', default='regional', type=click.Choice(['regional', 'global']), show_default=True)
 @click.option('--region')
 @click.option('--tags')
 @floating_ip.command("create")
 @click.pass_obj
-def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, region, tags):
+def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, scope, region, tags):
     try:
         response = cloudscale.floating_ip.create(
             ip_version=ip_version,
             server_uuid=server_uuid,
             prefix_length=prefix_length,
             reverse_ptr=reverse_ptr,
+            scope=scope,
             region=region,
             tags=to_dict(tags),
         )

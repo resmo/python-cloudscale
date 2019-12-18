@@ -12,6 +12,7 @@ class FloatingIp(CloudscaleMutable):
         prefix_length=None,
         reverse_ptr=None,
         server_uuid=None,
+        scope=None,
         region=None,
         tags=None,
     ):
@@ -20,6 +21,7 @@ class FloatingIp(CloudscaleMutable):
             'prefix_length': prefix_length,
             'reverse_ptr': reverse_ptr,
             'server': server_uuid,
+            'type': scope,
             'region': region,
             'tags': tags,
         }
