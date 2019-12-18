@@ -14,7 +14,7 @@ from .lib.objects_user import ObjectsUser
 
 from .error import CloudscaleException, CloudscaleApiException # noqa F401
 
-__version__ = '0.6.1'
+__version__ = '0.7.0'
 
 APP_NAME = 'cloudscale-cli'
 CLOUDSCALE_API_ENDPOINT = 'https://api.cloudscale.ch/v1'
