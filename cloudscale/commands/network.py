@@ -2,6 +2,7 @@ import sys
 import click
 from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
+from . import abort_if_false
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
@@ -81,6 +82,9 @@ def cmd_update(cloudscale, uuid, name, mtu, tags):
         sys.exit(1)
 
 @click.option('--uuid', required=True)
+@click.option('--force', '-f', is_flag=True, callback=abort_if_false,
+              expose_value=False,
+              prompt='Delete?')
 @network.command("delete")
 @click.pass_obj
 def cmd_delete(cloudscale, uuid):
