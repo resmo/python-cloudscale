@@ -63,7 +63,7 @@ def cmd_create(cloudscale, name, zone, mtu, auto_create_ipv4_subnet, tags):
 
 @click.option('--uuid', required=True)
 @click.option('--name')
-@click.option('--mtu')
+@click.option('--mtu', type=int)
 @click.option('--tags', multiple=True)
 @network.command("update")
 @click.pass_obj
