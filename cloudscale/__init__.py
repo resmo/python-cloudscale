@@ -36,6 +36,9 @@ class Cloudscale:
         else:
             self.api_token = self.config.get('api_token')
 
+        # Configre requests timeout
+        self.timeout = self.config.get('timeout', 60)
+
         if not self.api_token:
             raise CloudscaleException("Missing API key: see -h for help")
 
@@ -82,7 +85,9 @@ class Cloudscale:
         try:
             client = RestAPI(
                 api_token=self.api_token,
-                endpoint=CLOUDSCALE_API_ENDPOINT
+                endpoint=CLOUDSCALE_API_ENDPOINT,
+                user_agent="python-cloudscale {}".format(__version__),
+                timeout=self.timeout,
             )
             obj = self.service_classes[name]()
             obj._client = client
