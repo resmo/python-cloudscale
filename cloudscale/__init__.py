@@ -18,6 +18,7 @@ __version__ = '0.7.0'
 
 APP_NAME = 'cloudscale-cli'
 CLOUDSCALE_API_ENDPOINT = 'https://api.cloudscale.ch/v1'
+CLOUDSCALE_CONFIG = 'cloudscale.ini'
 
 
 class Cloudscale:
@@ -46,9 +47,12 @@ class Cloudscale:
 
 
     def _read_from_configfile(self, profile=None):
+
+        config_file = os.getenv('CLOUDSCALE_CONFIG', CLOUDSCALE_CONFIG)
+
         paths = (
-            os.path.join(os.path.expanduser('~'), '.cloudscale.ini'),
-            os.path.join(os.getcwd(), 'cloudscale.ini'),
+            os.path.join(os.path.expanduser('~'), '.{}'.format(config_file)),
+            os.path.join(os.getcwd(), config_file),
         )
 
         conf = configparser.ConfigParser()
