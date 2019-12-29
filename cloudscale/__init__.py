@@ -25,8 +25,16 @@ class Cloudscale:
 
     def __init__(self, api_token=None, profile=None, verbose=False):
 
-        config = self._read_from_configfile(profile=profile)
-        self.api_token = api_token or config.get('api_token')
+        if api_token and profile:
+            raise CloudscaleException("API token and profile are mutually exclusive")
+
+        # Read ini configs
+        self.config = self._read_from_configfile(profile=profile)
+
+        if api_token:
+            self.api_token = api_token
+        else:
+            self.api_token = self.config.get('api_token')
 
         if not self.api_token:
             raise CloudscaleException("Missing API key: see -h for help")
