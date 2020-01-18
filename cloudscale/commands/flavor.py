@@ -21,7 +21,7 @@ def cmd_list(cloudscale):
     try:
         response = cloudscale.flavor.get_all()
         if response:
-            headers = ['name', 'vcpu_count', 'memory_gb', 'slug']
+            headers = ['name', 'vcpu_count', 'memory_gb', 'slug', 'zones']
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
