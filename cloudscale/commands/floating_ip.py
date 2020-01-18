@@ -1,5 +1,6 @@
 import sys
 import click
+from ..log import logger
 from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 from . import abort_if_false
@@ -7,13 +8,12 @@ from . import abort_if_false
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
 @click.option('--profile', '-p', help="Profile used in config file.")
-@click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def floating_ip(ctx, profile, api_token, verbose):
+def floating_ip(ctx, profile, api_token):
     try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
+        ctx.obj = Cloudscale(api_token, profile)
     except CloudscaleException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @floating_ip.command("list")
@@ -26,7 +26,7 @@ def cmd_list(cloudscale):
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--network-id', 'uuid', required=True)
@@ -37,7 +37,7 @@ def cmd_show(cloudscale, uuid):
         response = cloudscale.floating_ip.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--ip-version', type=int, default=4, show_default=True)
@@ -62,7 +62,7 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
         )
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--network-id', 'uuid', required=True)
@@ -82,7 +82,7 @@ def cmd_update(cloudscale, uuid, server_uuid, reverse_ptr, tags):
         response = cloudscale.floating_ip.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--network-id', 'uuid', required=True)
@@ -96,5 +96,5 @@ def cmd_delete(cloudscale, uuid):
         cloudscale.floating_ip.delete(uuid)
         click.echo("Deleted!")
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)

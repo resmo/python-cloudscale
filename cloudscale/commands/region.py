@@ -1,18 +1,18 @@
 import sys
 import click
+from ..log import logger
 from ..util import to_table
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
 @click.option('--profile', '-p', help="Profile used in config file.")
-@click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def region(ctx, profile, api_token, verbose):
+def region(ctx, profile, api_token):
     try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
+        ctx.obj = Cloudscale(api_token, profile)
     except CloudscaleException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @region.command("list")
@@ -25,5 +25,5 @@ def cmd_list(cloudscale):
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)

@@ -1,6 +1,7 @@
 import os
 import configparser
 from .client import RestAPI
+from .log import logger
 from .lib.server import Server
 from .lib.server_group import ServerGroup
 from .lib.volume import Volume
@@ -23,7 +24,7 @@ CLOUDSCALE_CONFIG = 'cloudscale.ini'
 
 class Cloudscale:
 
-    def __init__(self, api_token=None, profile=None, verbose=False):
+    def __init__(self, api_token=None, profile=None):
 
         if api_token and profile:
             raise CloudscaleException("API token and profile are mutually exclusive")
@@ -36,13 +37,15 @@ class Cloudscale:
         else:
             self.api_token = self.config.get('api_token')
 
+        if not self.api_token:
+            raise CloudscaleException("Missing API key")
+
+        logger.debug("API token: {}...".format(self.api_token[:4]))
+
         # Configre requests timeout
         self.timeout = self.config.get('timeout', 60)
+        logger.debug("Timeout: {}".format(self.timeout))
 
-        if not self.api_token:
-            raise CloudscaleException("Missing API key: see -h for help")
-
-        self.verbose = verbose
         self.service_classes = {
             'server': Server,
             'server_group': ServerGroup,
@@ -75,6 +78,8 @@ class Cloudscale:
         else:
             profile = os.getenv('CLOUDSCALE_PROFILE', 'default')
 
+        logger.info("Profile: {}".format(profile))
+
         if not conf._sections.get(profile):
             return dict()
 
@@ -91,7 +96,6 @@ class Cloudscale:
             )
             obj = self.service_classes[name]()
             obj._client = client
-            obj.verbose = self.verbose
             return obj
         except NameError as e:
             raise CloudscaleException(e)

@@ -1,13 +1,15 @@
 from ..error import CloudscaleApiException
+from ..log import logger
 
 class CloudscaleBase:
 
     def __init__(self):
-        self.verbose = False
         self._client = None
         self.resource = None
 
     def _process_response(self, response):
+        logger.debug("API respnose: {}".format(response))
+
         status_code = response.get('status_code')
         data = response.get('data', dict())
         if status_code not in (200, 201, 204):
@@ -23,6 +25,8 @@ class CloudscaleBase:
 
     def get_all(self, filter_tag=None):
         if filter_tag is not None:
+            logger.debug("Filter tag: {}".format(filter_tag))
+
             if '=' in filter_tag:
                 tag_key, tag_value = filter_tag.split('=')
             else:

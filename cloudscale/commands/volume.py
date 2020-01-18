@@ -1,5 +1,6 @@
 import sys
 import click
+from ..log import logger
 from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
 from . import abort_if_false
@@ -7,13 +8,12 @@ from . import abort_if_false
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
 @click.option('--profile', '-p', envvar='CLOUDSCALE_PROFILE', help="Profile used in config file.")
-@click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
-def volume(ctx, profile, api_token, verbose):
+def volume(ctx, profile, api_token):
     try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
+        ctx.obj = Cloudscale(api_token, profile)
     except CloudscaleException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--filter-tag')
@@ -27,7 +27,7 @@ def cmd_list(cloudscale, filter_tag):
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -38,7 +38,7 @@ def cmd_show(cloudscale, uuid):
         response = cloudscale.volume.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--name', required=True)
@@ -61,7 +61,7 @@ def cmd_create(cloudscale, name, server_uuids, size_gb, volume_type, zone, tags)
         )
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -83,7 +83,7 @@ def cmd_update(cloudscale, uuid, name, server_uuids, size_gb, tags):
         response = cloudscale.volume.get_by_uuid(uuid)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)
 
 @click.option('--uuid', required=True)
@@ -97,5 +97,5 @@ def cmd_delete(cloudscale, uuid):
         cloudscale.volume.delete(uuid)
         click.echo("Deleted!")
     except CloudscaleApiException as e:
-        click.echo(e, err=True)
+        logger.error(e)
         sys.exit(1)

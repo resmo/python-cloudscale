@@ -1,4 +1,6 @@
 import click
+import click_log
+from .log import logger
 from click_repl import register_repl
 from .util import OrderedGroup
 from .commands.version import cmd_version
@@ -13,10 +15,12 @@ from .commands.subnet import subnet
 from .commands.volume import volume
 from .commands.objects_user import objects_user
 
+click_log.basic_config(logger)
 
 @click.group(cls=OrderedGroup, context_settings={
     'help_option_names': ['-h', '--help'],
 })
+@click_log.simple_verbosity_option(logger)
 def cli():
     pass
 
