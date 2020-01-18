@@ -236,7 +236,7 @@ def test_server_missing_api_key():
         cloudscale = Cloudscale(api_token=None)
         cloudscale.server.get_all()
     except CloudscaleException as e:
-        assert str(e) == "Missing API key: see -h for help"
+        assert str(e) == "Missing API key"
 
 @responses.activate
 def test_server_create():
