@@ -89,7 +89,6 @@ def test_volume_get_by_uuid():
         'volume',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -97,7 +96,6 @@ def test_volume_get_by_uuid():
         'volume',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -129,7 +127,6 @@ def test_volume_delete():
         'volume',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 1
@@ -137,16 +134,14 @@ def test_volume_delete():
         'volume',
         '-a', 'token',
         'delete',
-        '--uuid',
-        uuid,
         '--force',
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'volume',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -245,19 +240,17 @@ def test_volume_update():
         'volume',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'volume',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
+        uuid,
     ])
     assert result.exit_code > 0

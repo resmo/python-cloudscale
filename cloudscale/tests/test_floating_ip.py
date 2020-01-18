@@ -89,7 +89,6 @@ def test_floating_ip_get_by_uuid():
         'floating-ip',
         '-a', 'token',
         'show',
-        '--network-id',
         network_id,
     ])
     assert result.exit_code == 0
@@ -97,7 +96,6 @@ def test_floating_ip_get_by_uuid():
         'floating-ip',
         '-a', 'token',
         'show',
-        '--network-id',
         network_id,
     ])
     assert result.exit_code > 0
@@ -128,7 +126,6 @@ def test_floating_ip_delete():
         'floating-ip',
         '-a', 'token',
         'delete',
-        '--network-id',
         network_id,
     ])
     assert result.exit_code == 1
@@ -137,7 +134,6 @@ def test_floating_ip_delete():
         'floating-ip',
         '-a', 'token',
         'delete',
-        '--network-id',
         network_id,
         '--force',
     ])
@@ -146,7 +142,6 @@ def test_floating_ip_delete():
         'floating-ip',
         '-a', 'token',
         'delete',
-        '--network-id',
         network_id,
     ])
     assert result.exit_code > 0
@@ -237,19 +232,17 @@ def test_floating_ip_update():
         'floating-ip',
         '-a', 'token',
         'update',
-        '--network-id',
-        network_id,
         '--reverse-ptr',
         reverse_ptr,
+        network_id,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'floating-ip',
         '-a', 'token',
         'update',
-        '--network-id',
-        network_id,
         '--reverse-ptr',
         reverse_ptr,
+        network_id,
     ])
     assert result.exit_code > 0

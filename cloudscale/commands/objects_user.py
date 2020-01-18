@@ -30,7 +30,7 @@ def cmd_list(cloudscale, filter_tag):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--id', '--uuid', 'uuid', required=True)
+@click.argument('uuid', required=True)
 @objects_user.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
@@ -53,7 +53,7 @@ def cmd_create(cloudscale, display_name, tags):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--id', '--uuid', 'uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--display-name')
 @click.option('--tags', multiple=True)
 @objects_user.command("update")
@@ -67,7 +67,7 @@ def cmd_update(cloudscale, uuid, display_name, tags):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--id', '--uuid', 'uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--force', '-f', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Delete?')

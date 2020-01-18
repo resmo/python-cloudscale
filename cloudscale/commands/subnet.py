@@ -28,7 +28,7 @@ def cmd_list(cloudscale):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @subnet.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):

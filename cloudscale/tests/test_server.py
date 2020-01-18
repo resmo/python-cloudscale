@@ -132,7 +132,6 @@ def test_server_get_by_uuid():
         'server',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -140,7 +139,6 @@ def test_server_get_by_uuid():
         'server',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -174,7 +172,7 @@ def test_server_delete():
         'server',
         '-a', 'token',
         'delete',
-        '--uuid',
+
         uuid,
     ])
     assert result.exit_code == 1
@@ -183,16 +181,15 @@ def test_server_delete():
         'server',
         '-a', 'token',
         'delete',
-        '--uuid',
-        uuid,
         '--force',
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'server',
         '-a', 'token',
         'delete',
-        '--uuid',
+
         uuid,
     ])
     assert result.exit_code > 0
@@ -338,24 +335,22 @@ def test_server_update():
         'server',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
         '--tags',
-        'project=gemini'
+        'project=gemini',
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'server',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
         '--tags',
-        'project=gemini'
+        'project=gemini',
+        uuid,
     ])
     assert result.exit_code > 0
 
@@ -397,7 +392,6 @@ def test_server_start():
         'server',
         '-a', 'token',
         'start',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -405,7 +399,6 @@ def test_server_start():
         'server',
         '-a', 'token',
         'start',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -448,7 +441,6 @@ def test_server_stop():
         'server',
         '-a', 'token',
         'stop',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -456,7 +448,6 @@ def test_server_stop():
         'server',
         '-a', 'token',
         'stop',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -499,7 +490,6 @@ def test_server_reboot():
         'server',
         '-a', 'token',
         'reboot',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -507,7 +497,6 @@ def test_server_reboot():
         'server',
         '-a', 'token',
         'reboot',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0

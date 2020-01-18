@@ -30,7 +30,7 @@ def cmd_list(cloudscale, filter_tag):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @volume.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
@@ -64,7 +64,7 @@ def cmd_create(cloudscale, name, server_uuids, size_gb, volume_type, zone, tags)
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--server-uuids', multiple=True)
 @click.option('--size-gb', type=int)
@@ -86,7 +86,7 @@ def cmd_update(cloudscale, uuid, name, server_uuids, size_gb, tags):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--force', '-f', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Delete?')

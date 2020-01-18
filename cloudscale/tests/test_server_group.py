@@ -95,7 +95,6 @@ def test_server_groups_get_by_uuid():
         'server-group',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -103,7 +102,6 @@ def test_server_groups_get_by_uuid():
         'server-group',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -134,7 +132,6 @@ def test_server_groups_delete():
         'server-group',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 1
@@ -142,16 +139,14 @@ def test_server_groups_delete():
         'server-group',
         '-a', 'token',
         'delete',
-        '--uuid',
-        uuid,
         '--force',
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'server-group',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -236,19 +231,17 @@ def test_server_groups_update():
         'server-group',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'server-group',
         '-a', 'token',
         'update',
-        '--uuid',
-        uuid,
         '--name',
         name,
+        uuid,
     ])
     assert result.exit_code > 0

@@ -29,12 +29,12 @@ def cmd_list(cloudscale):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--network-id', 'uuid', required=True)
+@click.argument('network-id', required=True)
 @floating_ip.command("show")
 @click.pass_obj
-def cmd_show(cloudscale, uuid):
+def cmd_show(cloudscale, network_id):
     try:
-        response = cloudscale.floating_ip.get_by_uuid(uuid)
+        response = cloudscale.floating_ip.get_by_uuid(network_id)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
         click.echo(e, err=True)
@@ -65,35 +65,35 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--network-id', 'uuid', required=True)
+@click.argument('network-id', required=True)
 @click.option('--server-uuid', '--server')
 @click.option('--reverse-ptr')
 @click.option('--tags')
 @floating_ip.command("update")
 @click.pass_obj
-def cmd_update(cloudscale, uuid, server_uuid, reverse_ptr, tags):
+def cmd_update(cloudscale, network_id, server_uuid, reverse_ptr, tags):
     try:
         cloudscale.floating_ip.update(
-            uuid=uuid,
+            uuid=network_id,
             server_uuid=server_uuid,
             reverse_ptr=reverse_ptr,
             tags=to_dict(tags),
         )
-        response = cloudscale.floating_ip.get_by_uuid(uuid)
+        response = cloudscale.floating_ip.get_by_uuid(network_id)
         click.echo(to_pretty_json(response))
     except CloudscaleApiException as e:
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--network-id', 'uuid', required=True)
+@click.argument('network-id', required=True)
 @click.option('--force', '-f', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Delete?')
 @floating_ip.command("delete")
 @click.pass_obj
-def cmd_delete(cloudscale, uuid):
+def cmd_delete(cloudscale, network_id):
     try:
-        cloudscale.floating_ip.delete(uuid)
+        cloudscale.floating_ip.delete(network_id)
         click.echo("Deleted!")
     except CloudscaleApiException as e:
         click.echo(e, err=True)
