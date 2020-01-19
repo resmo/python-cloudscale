@@ -1,5 +1,4 @@
 import click
-from click_repl import register_repl
 from .util import OrderedGroup
 from .commands.version import cmd_version
 from .commands.server import server
@@ -32,4 +31,3 @@ cli.add_command(network)
 cli.add_command(subnet)
 cli.add_command(volume)
 cli.add_command(objects_user)
-register_repl(cli)
