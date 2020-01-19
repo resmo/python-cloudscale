@@ -172,7 +172,6 @@ def test_server_delete():
         'server',
         '-a', 'token',
         'delete',
-
         uuid,
     ])
     assert result.exit_code == 1
@@ -189,7 +188,6 @@ def test_server_delete():
         'server',
         '-a', 'token',
         'delete',
-
         uuid,
     ])
     assert result.exit_code > 0
