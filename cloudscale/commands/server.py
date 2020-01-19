@@ -30,7 +30,7 @@ def cmd_list(cloudscale, filter_tag):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @server.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
@@ -100,7 +100,7 @@ def cmd_create(
         sys.exit(1)
 
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--flavor')
 @click.option('--tags', multiple=True)
@@ -120,7 +120,7 @@ def cmd_update(cloudscale, uuid, name, flavor, tags):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @click.option('--force', '-f', is_flag=True, callback=abort_if_false,
               expose_value=False,
               prompt='Delete?')
@@ -134,7 +134,7 @@ def cmd_delete(cloudscale, uuid):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @server.command("start")
 @click.pass_obj
 def cmd_start(cloudscale, uuid):
@@ -146,7 +146,7 @@ def cmd_start(cloudscale, uuid):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @server.command("stop")
 @click.pass_obj
 def cmd_stop(cloudscale, uuid):
@@ -158,7 +158,7 @@ def cmd_stop(cloudscale, uuid):
         click.echo(e, err=True)
         sys.exit(1)
 
-@click.option('--uuid', required=True)
+@click.argument('uuid', required=True)
 @server.command("reboot")
 @click.pass_obj
 def cmd_reboot(cloudscale, uuid):

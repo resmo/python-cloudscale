@@ -84,7 +84,6 @@ def test_objects_user_get_by_uuid():
         'objects-user',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -92,7 +91,6 @@ def test_objects_user_get_by_uuid():
         'objects-user',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -124,7 +122,6 @@ def test_objects_user_delete():
         'objects-user',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 1
@@ -132,16 +129,14 @@ def test_objects_user_delete():
         'objects-user',
         '-a', 'token',
         'delete',
-        '--uuid',
-        uuid,
         '--force',
+        uuid,
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
         'objects-user',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -246,7 +241,6 @@ def test_objects_user_update():
         'objects-user',
         '-a', 'token',
         'update',
-        '--uuid',
         uuid,
         '--display-name',
         display_name,
@@ -256,7 +250,6 @@ def test_objects_user_update():
         'objects-user',
         '-a', 'token',
         'update',
-        '--uuid',
         uuid,
         '--display-name',
         display_name,

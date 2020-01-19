@@ -83,7 +83,6 @@ def test_subnet_get_by_uuid():
         'subnet',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -91,7 +90,6 @@ def test_subnet_get_by_uuid():
         'subnet',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0

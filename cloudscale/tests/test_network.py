@@ -91,7 +91,6 @@ def test_network_get_by_uuid():
         'network',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 0
@@ -99,7 +98,6 @@ def test_network_get_by_uuid():
         'network',
         '-a', 'token',
         'show',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -131,7 +129,6 @@ def test_network_delete():
         'network',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code == 1
@@ -140,7 +137,6 @@ def test_network_delete():
         'network',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
         '--force',
     ])
@@ -149,7 +145,6 @@ def test_network_delete():
         'network',
         '-a', 'token',
         'delete',
-        '--uuid',
         uuid,
     ])
     assert result.exit_code > 0
@@ -255,7 +250,6 @@ def test_network_update():
         'network',
         '-a', 'token',
         'update',
-        '--uuid',
         uuid,
         '--name',
         name,
@@ -265,7 +259,6 @@ def test_network_update():
         'network',
         '-a', 'token',
         'update',
-        '--uuid',
         uuid,
         '--name',
         name,
