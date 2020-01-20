@@ -85,21 +85,25 @@ cloudscale-cli server --profile production list
 See all options:
 
 ~~~shell
-$ cloudscale-cli --help
+ $ cloudscale-cli
 Usage: cloudscale-cli [OPTIONS] COMMAND [ARGS]...
 
 Options:
   -h, --help  Show this message and exit.
 
 Commands:
-  version
+  flavor
+  floating-ip
+  image
+  network
+  objects-user
+  region
   server
   server-group
-  floating-ip
-  flavor
-  image
-  region
-  network
+  subnet
+  version
+  volume
+
 ~~~
 
 ### Usage Examples
