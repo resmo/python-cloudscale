@@ -1,5 +1,6 @@
 import click
-from .. import APP_NAME, __version__
+from .. import APP_NAME
+from ..version import __version__
 
 @click.command("version")
 def cmd_version():

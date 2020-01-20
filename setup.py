@@ -18,9 +18,13 @@ tests_require = []
 with open("requirements.dev.txt", "r", encoding="utf-8") as f:
     tests_require = list(i.rstrip() for i in f.readlines())
 
+version = {}
+with open("cloudscale/version.py") as fp:
+    exec(fp.read(), version)
+
 setup(
     name="cloudscale",
-    version="0.8.0",
+    version=version['__version__'],
     author="René Moser",
     author_email="mail@renemoser.net",
     license="MIT",
