@@ -57,3 +57,11 @@ def test_flavor_get_all():
         'list',
     ])
     assert result.exit_code > 0
+
+def test_flavor_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'flavor',
+        'list',
+    ])
+    assert result.exit_code == 1

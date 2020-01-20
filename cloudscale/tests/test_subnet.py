@@ -93,3 +93,11 @@ def test_subnet_get_by_uuid():
         uuid,
     ])
     assert result.exit_code > 0
+
+def test_subnet_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'subnet',
+        'list',
+    ])
+    assert result.exit_code == 1

@@ -57,3 +57,11 @@ def test_image_get_all():
         'list',
     ])
     assert result.exit_code > 0
+
+def test_image_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'image',
+        'list',
+    ])
+    assert result.exit_code == 1

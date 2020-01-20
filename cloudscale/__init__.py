@@ -71,7 +71,7 @@ class Cloudscale:
 
         if profile:
             if profile not in conf._sections:
-                raise CloudscaleException("Profile not found in config files: {}, ({})".format(profile, ', '. join(paths)))
+                raise CloudscaleException("Profile '{}' not found in config files: ({})".format(profile, ', '. join(paths)))
         else:
             profile = os.getenv('CLOUDSCALE_PROFILE', 'default')
 
@@ -93,5 +93,6 @@ class Cloudscale:
             obj._client = client
             obj.verbose = self.verbose
             return obj
-        except NameError as e:
-            raise CloudscaleException(e)
+        except KeyError as e:
+            msg = "{} not implemented".format(e)
+            raise NotImplementedError(msg)

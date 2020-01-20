@@ -14,7 +14,9 @@ OBJECTS_USER_RESP = {
             "secret_key": "bn2ufcwbIa0ARLc5CLRSlVaCfFxPHOpHmjKiH34T"
         }
     ],
-    "tags": {}
+    "tags": {
+        "project": "apollo"
+    }
 }
 
 @responses.activate
@@ -26,7 +28,22 @@ def test_objects_user_get_all():
         status=200)
     responses.add(
         responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users?tag:project=apollo',
+        json=[OBJECTS_USER_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
         CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json={},
+        status=500)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json=[OBJECTS_USER_RESP],
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users?tag:project=apollo',
         json=[OBJECTS_USER_RESP],
         status=200)
     responses.add(
@@ -40,12 +57,33 @@ def test_objects_user_get_all():
     assert objects_users[0]['display_name'] == "alan"
     assert objects_users[0]['id'] == "6fe39134bf4178747eebc429f82cfafdd08891d4279d0d899bc4012db1db6a15"
 
+    cloudscale = Cloudscale(api_token="token")
+    objects_users = cloudscale.objects_user.get_all(filter_tag="project=apollo")
+    assert objects_users[0]['display_name'] == "alan"
+    assert objects_users[0]['id'] == "6fe39134bf4178747eebc429f82cfafdd08891d4279d0d899bc4012db1db6a15"
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.objects_user.get_all()
+    except CloudscaleApiException as e:
+        assert e.status_code == 500
+        assert str(e).startswith("API Response Error (500):")
+
     runner = CliRunner()
     result = runner.invoke(cli, [
         'objects-user',
         '-a',
         'token',
         'list',
+    ])
+    assert result.exit_code == 0
+    result = runner.invoke(cli, [
+        'objects-user',
+        '-a',
+        'token',
+        'list',
+        '--filter-tag',
+        'project=apollo',
     ])
     assert result.exit_code == 0
     result = runner.invoke(cli, [
@@ -66,18 +104,20 @@ def test_objects_user_get_by_uuid():
         status=200)
     responses.add(
         responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
-        json=OBJECTS_USER_RESP,
-        status=200)
-    responses.add(
-        responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/unknown',
         json={},
-        status=500)
+        status=404)
+
     cloudscale = Cloudscale(api_token="token")
     objects_user = cloudscale.objects_user.get_by_uuid(uuid=uuid)
     assert objects_user['display_name'] == "alan"
     assert objects_user['id'] == uuid
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.objects_user.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -87,11 +127,12 @@ def test_objects_user_get_by_uuid():
         uuid,
     ])
     assert result.exit_code == 0
+
     result = runner.invoke(cli, [
         'objects-user',
         '-a', 'token',
         'show',
-        uuid,
+        'unknown',
     ])
     assert result.exit_code > 0
 
@@ -105,17 +146,19 @@ def test_objects_user_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/unknown',
         json={},
-        status=500)
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     objects_user = cloudscale.objects_user.delete(uuid=uuid)
     assert objects_user is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.objects_user.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -137,26 +180,10 @@ def test_objects_user_delete():
         'objects-user',
         '-a', 'token',
         'delete',
-        uuid,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
-
-@responses.activate
-def test_objects_user_get_by_uuid_not_found():
-    responses.add(
-        responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/unknown',
-        json={
-            "detail": "Not found."
-        },
-        status=404)
-    try:
-        cloudscale = Cloudscale(api_token="token")
-        cloudscale.objects_user.get_by_uuid(uuid="unknown")
-    except CloudscaleApiException as e:
-        assert e.status_code == 404
-        assert str(e) == "API Response Error (404): Not found."
-        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
 
 @responses.activate
 def test_objects_user_create():
@@ -167,6 +194,11 @@ def test_objects_user_create():
         CLOUDSCALE_API_ENDPOINT + '/objects-users',
         json=OBJECTS_USER_RESP,
         status=201)
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users',
+        json={},
+        status=500)
     responses.add(
         responses.POST,
         CLOUDSCALE_API_ENDPOINT + '/objects-users',
@@ -182,6 +214,14 @@ def test_objects_user_create():
     cloudscale.objects_user.create(
         display_name=display_name,
     )
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.objects_user.create(
+            display_name=display_name,
+        )
+    except CloudscaleApiException as e:
+        assert e.status_code == 500
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -217,24 +257,26 @@ def test_objects_user_update():
         status=200)
     responses.add(
         responses.PATCH,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
-        json=OBJECTS_USER_RESP,
-        status=204)
-    responses.add(
-        responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
-        json=OBJECTS_USER_RESP,
-        status=200)
-    responses.add(
-        responses.PATCH,
-        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/unknown',
         json={},
-        status=500)
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
-    objects_user = cloudscale.objects_user.update(uuid=uuid, display_name=display_name)
+    objects_user = cloudscale.objects_user.update(
+        uuid=uuid,
+        display_name=display_name
+    )
     assert objects_user['display_name'] == display_name
     assert objects_user['id'] == uuid
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        objects_user = cloudscale.objects_user.update(
+            uuid="unknown",
+            display_name=display_name
+        )
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -250,8 +292,16 @@ def test_objects_user_update():
         'objects-user',
         '-a', 'token',
         'update',
-        uuid,
+        'unknown',
         '--display-name',
         display_name,
     ])
     assert result.exit_code > 0
+
+def test_objects_user_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'objects-user',
+        'list',
+    ])
+    assert result.exit_code == 1

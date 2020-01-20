@@ -110,17 +110,21 @@ def test_volume_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
-        json={},
-        status=500)
+        CLOUDSCALE_API_ENDPOINT + '/volumes/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     volume = cloudscale.volume.delete(uuid=uuid)
     assert volume is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.volume.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -142,7 +146,8 @@ def test_volume_delete():
         'volume',
         '-a', 'token',
         'delete',
-        uuid,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
 
@@ -254,3 +259,28 @@ def test_volume_update():
         uuid,
     ])
     assert result.exit_code > 0
+
+@responses.activate
+def test_volume_get_by_uuid_not_found():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.volume.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
+        assert str(e) == "API Response Error (404): Not found."
+        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
+
+def test_volume_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'volume',
+        'list',
+    ])
+    assert result.exit_code == 1

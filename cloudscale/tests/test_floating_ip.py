@@ -109,17 +109,21 @@ def test_floating_ip_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
-        json={},
-        status=500)
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     floating_ip = cloudscale.floating_ip.delete(uuid=network_id)
     assert floating_ip is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.floating_ip.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -142,7 +146,8 @@ def test_floating_ip_delete():
         'floating-ip',
         '-a', 'token',
         'delete',
-        network_id,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
 
@@ -246,3 +251,28 @@ def test_floating_ip_update():
         network_id,
     ])
     assert result.exit_code > 0
+
+@responses.activate
+def test_floating_ip_get_by_uuid_not_found():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.floating_ip.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
+        assert str(e) == "API Response Error (404): Not found."
+        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
+
+def test_floating_ip_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'floating-ip',
+        'list',
+    ])
+    assert result.exit_code == 1

@@ -112,17 +112,21 @@ def test_network_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
-        json={},
-        status=500)
+        CLOUDSCALE_API_ENDPOINT + '/networks/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     network = cloudscale.network.delete(uuid=uuid)
     assert network is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.network.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -145,26 +149,10 @@ def test_network_delete():
         'network',
         '-a', 'token',
         'delete',
-        uuid,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
-
-@responses.activate
-def test_network_get_by_uuid_not_found():
-    responses.add(
-        responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/networks/unknown',
-        json={
-            "detail": "Not found."
-        },
-        status=404)
-    try:
-        cloudscale = Cloudscale(api_token="token")
-        cloudscale.network.get_by_uuid(uuid="unknown")
-    except CloudscaleApiException as e:
-        assert e.status_code == 404
-        assert str(e) == "API Response Error (404): Not found."
-        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
 
 @responses.activate
 def test_network_create():
@@ -264,3 +252,28 @@ def test_network_update():
         name,
     ])
     assert result.exit_code > 0
+
+@responses.activate
+def test_network_get_by_uuid_not_found():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.network.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
+        assert str(e) == "API Response Error (404): Not found."
+        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
+
+def test_network_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'network',
+        'list',
+    ])
+    assert result.exit_code == 1

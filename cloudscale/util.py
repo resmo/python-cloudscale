@@ -3,6 +3,8 @@ import json
 from click import Group
 from collections import OrderedDict
 from tabulate import tabulate
+from pygments import highlight, lexers, formatters
+
 
 class OrderedGroup(Group):
     '''
@@ -14,7 +16,7 @@ class OrderedGroup(Group):
         self.commands = OrderedDict(commands)
 
     def list_commands(self, ctx):
-        return self.commands.keys()
+        return sorted(self.commands.keys())
 
 
 def to_table(data: list, headers: list) -> str:
@@ -34,8 +36,6 @@ def to_table(data: list, headers: list) -> str:
                         row = d[header]['name']
                     elif 'slug' in d[header]:
                         row = d[header]['slug']
-                    else:
-                        row = d[header]
                 elif isinstance(d[header], list):
                     row_list = []
                     for i in d[header]:
@@ -57,11 +57,7 @@ def to_pretty_json(data: dict) -> tuple:
     Format JSON to human readable.
     '''
     result = json.dumps(data, sort_keys=True, indent=4)
-    try:
-        from pygments import highlight, lexers, formatters
-        result = highlight(result, lexers.JsonLexer(), formatters.TerminalFormatter())
-    except ImportError:
-        pass
+    result = highlight(result, lexers.JsonLexer(), formatters.TerminalFormatter())
     return result
 
 def to_dict(data: tuple) -> dict:

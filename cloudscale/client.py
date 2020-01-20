@@ -34,9 +34,6 @@ class RestAPI:
         return data
 
     def get_resources(self, resource, payload=None, resource_id=None):
-        if not resource:
-            return {}
-
         query_url = self.endpoint + '/' + resource
         if resource_id:
             query_url = query_url + '/' + resource_id

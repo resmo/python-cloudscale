@@ -153,19 +153,21 @@ def test_server_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        CLOUDSCALE_API_ENDPOINT + '/servers/unknown',
         json={
-            "detail": "Server error."
+            "detail": "Not found."
         },
-        status=500)
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     server = cloudscale.server.delete(uuid=uuid)
     assert server is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.server.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -188,26 +190,10 @@ def test_server_delete():
         'server',
         '-a', 'token',
         'delete',
-        uuid,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
-
-@responses.activate
-def test_server_get_by_uuid_not_found():
-    responses.add(
-        responses.GET,
-        CLOUDSCALE_API_ENDPOINT + '/servers/unknown',
-        json={
-            "detail": "Not found."
-        },
-        status=404)
-    try:
-        cloudscale = Cloudscale(api_token="token")
-        cloudscale.server.get_by_uuid(uuid="unknown")
-    except CloudscaleApiException as e:
-        assert e.status_code == 404
-        assert str(e) == "API Response Error (404): Not found."
-        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
 
 @responses.activate
 def test_server_get_auth_not_provided():
@@ -225,13 +211,13 @@ def test_server_get_auth_not_provided():
         assert e.status_code == 401
         assert str(e) == "API Response Error (401): Authentication credentials were not provided."
 
-@responses.activate
 def test_server_missing_api_key():
-    try:
-        cloudscale = Cloudscale(api_token=None)
-        cloudscale.server.get_all()
-    except CloudscaleException as e:
-        assert str(e) == "Missing API key: see -h for help"
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server',
+        'list',
+    ])
+    assert result.exit_code == 1
 
 @responses.activate
 def test_server_create():
@@ -498,3 +484,20 @@ def test_server_reboot():
         uuid,
     ])
     assert result.exit_code > 0
+
+@responses.activate
+def test_server_get_by_uuid_not_found():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.server.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
+        assert str(e) == "API Response Error (404): Not found."
+        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}

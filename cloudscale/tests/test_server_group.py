@@ -116,16 +116,21 @@ def test_server_groups_delete():
         status=204)
     responses.add(
         responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
-        status=204)
-    responses.add(
-        responses.DELETE,
-        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
-        status=500)
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
 
     cloudscale = Cloudscale(api_token="token")
     server_group = cloudscale.server_group.delete(uuid=uuid)
     assert server_group is None
+
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.server_group.delete(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
 
     runner = CliRunner()
     result = runner.invoke(cli, [
@@ -147,7 +152,8 @@ def test_server_groups_delete():
         'server-group',
         '-a', 'token',
         'delete',
-        uuid,
+        '--force',
+        'unknown',
     ])
     assert result.exit_code > 0
 
@@ -245,3 +251,28 @@ def test_server_groups_update():
         uuid,
     ])
     assert result.exit_code > 0
+
+@responses.activate
+def test_server_group_get_by_uuid_not_found():
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/unknown',
+        json={
+            "detail": "Not found."
+        },
+        status=404)
+    try:
+        cloudscale = Cloudscale(api_token="token")
+        cloudscale.server_group.get_by_uuid(uuid="unknown")
+    except CloudscaleApiException as e:
+        assert e.status_code == 404
+        assert str(e) == "API Response Error (404): Not found."
+        assert e.response == {'data': {'detail': 'Not found.'}, 'status_code': 404}
+
+def test_server_group_missing_api_key():
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        'list',
+    ])
+    assert result.exit_code == 1
