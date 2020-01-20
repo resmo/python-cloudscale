@@ -103,7 +103,16 @@ def test_volume_get_by_uuid():
 @responses.activate
 def test_volume_delete():
     uuid = "2db69ba3-1864-4608-853a-0771b6885a3a"
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,
+        json=VOLUME_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/volumes/unknown',
+        json=VOLUME_RESP,
+        status=200)
     responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/volumes/' + uuid,

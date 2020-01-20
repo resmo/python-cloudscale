@@ -104,6 +104,16 @@ def test_floating_ip_get_by_uuid():
 def test_floating_ip_delete():
     network_id = "192.0.2.123"
     responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
+        json=FLOATING_IP_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/floating-ips/unknown',
+        json=FLOATING_IP_RESP,
+        status=200)
+    responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/floating-ips/' + network_id,
         status=204)

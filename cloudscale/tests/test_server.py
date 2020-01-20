@@ -146,7 +146,16 @@ def test_server_get_by_uuid():
 @responses.activate
 def test_server_delete():
     uuid = "47cec963-fcd2-482f-bdb6-24461b2d47b1"
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,
+        json=SERVER_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/servers/unknown',
+        json=SERVER_RESP,
+        status=200)
     responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/servers/' + uuid,

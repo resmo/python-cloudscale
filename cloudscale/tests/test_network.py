@@ -105,7 +105,16 @@ def test_network_get_by_uuid():
 @responses.activate
 def test_network_delete():
     uuid = "2db69ba3-1864-4608-853a-0771b6885a3a"
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,
+        json=NETWORK_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/networks/unknown',
+        json=NETWORK_RESP,
+        status=200)
     responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/networks/' + uuid,

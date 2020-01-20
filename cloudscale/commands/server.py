@@ -2,7 +2,8 @@ import sys
 import click
 from ..util import to_table, to_pretty_json, to_dict
 from .. import Cloudscale, CloudscaleApiException, CloudscaleException
-from . import abort_if_false
+
+headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
@@ -23,7 +24,6 @@ def cmd_list(cloudscale, filter_tag):
     try:
         response = cloudscale.server.get_all(filter_tag)
         if response:
-            headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
             table = to_table(response, headers)
             click.echo(table)
     except CloudscaleApiException as e:
@@ -121,13 +121,16 @@ def cmd_update(cloudscale, uuid, name, flavor, tags):
         sys.exit(1)
 
 @click.argument('uuid', required=True)
-@click.option('--force', '-f', is_flag=True, callback=abort_if_false,
-              expose_value=False,
-              prompt='Delete?')
+@click.option('--force', is_flag=True)
 @server.command("delete")
 @click.pass_obj
-def cmd_delete(cloudscale, uuid):
+def cmd_delete(cloudscale, uuid, force):
     try:
+        response = cloudscale.server.get_by_uuid(uuid)
+        table = to_table([response], headers)
+        click.echo(table)
+        if not force:
+            click.confirm('Do you want to delete?', abort=True)
         cloudscale.server.delete(uuid)
         click.echo("Deleted!")
     except CloudscaleApiException as e:

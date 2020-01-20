@@ -139,7 +139,16 @@ def test_objects_user_get_by_uuid():
 @responses.activate
 def test_objects_user_delete():
     uuid = "6fe39134bf4178747eebc429f82cfafdd08891d4279d0d899bc4012db1db6a15"
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,
+        json=OBJECTS_USER_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/objects-users/unknown',
+        json=OBJECTS_USER_RESP,
+        status=200)
     responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/objects-users/' + uuid,

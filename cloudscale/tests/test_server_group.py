@@ -109,7 +109,16 @@ def test_server_groups_get_by_uuid():
 @responses.activate
 def test_server_groups_delete():
     uuid = "e3b63018-fad6-45f2-9f57-3ea0da726d8c"
-
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=200)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/unknown',
+        json=SERVER_GROUP_RESP,
+        status=200)
     responses.add(
         responses.DELETE,
         CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
