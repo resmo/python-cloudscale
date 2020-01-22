@@ -103,27 +103,62 @@ Commands:
   subnet
   version
   volume
-
 ~~~
 
 ### Usage Examples
 
-#### Create a Server
+#### Create a server
 
 ~~~shell
 cloudscale-cli server create --flavor flex-2 --name my-server --image centos-7 --ssh-keys "$(cat ~/.ssh/id_rsa.pub)"
 ~~~
 
-#### List all Servers
+#### List all servers
 
 ~~~shell
 cloudscale-cli server list
 ~~~
 
-#### Get Servers having the tag project=gemini
+#### List servers having the tag project with value gemini
 
 ~~~shell
 cloudscale-cli server list --filter-tag project=gemini
+~~~
+
+#### List servers having a tag project
+
+~~~shell
+cloudscale-cli server list --filter-tag project
+~~~
+
+#### Update servers tags (but keep all existing)
+
+~~~shell
+cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod
+~~~
+
+#### Update server tags, remove a specific tag
+
+~~~shell
+cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-tags status=wip
+~~~
+
+#### Update server tags, remove other tags
+
+~~~shell
+cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-all-tags
+~~~
+
+#### Stop a server
+
+~~~shell
+cloudscale-cli server stop <uuid>
+~~~
+
+#### Start a server
+
+~~~shell
+cloudscale-cli server start <uuid>
 ~~~
 
 ## Usage in Python
@@ -153,6 +188,32 @@ servers = cloudscale.server.get_all()
 for server in servers:
     if server['status'] == "running":
         print(server['name'])
+~~~
+
+### Print the server names of all servers having a specifc tag project
+~~~python
+import os
+from cloudscale import Cloudscale, CloudscaleApiException
+
+api_token = os.getenv('CLOUDSCALE_API_TOKEN')
+
+cloudscale = Cloudscale(api_token=api_token)
+servers = cloudscale.server.get_all(filter_tag='project')
+for server in servers:
+    print(server['name'])
+~~~
+
+### Print the server names of all servers having a specifc tag project with value apollo
+~~~python
+import os
+from cloudscale import Cloudscale, CloudscaleApiException
+
+api_token = os.getenv('CLOUDSCALE_API_TOKEN')
+
+cloudscale = Cloudscale(api_token=api_token)
+servers = cloudscale.server.get_all(filter_tag='project=apollo')
+for server in servers:
+    print(server['name'])
 ~~~
 
 ### Get resource by UUID
@@ -188,4 +249,11 @@ except CloudscaleApiException as e:
     print(e.status_code)
     # Prints raw API response
     print(e.response)
+~~~
+
+## Development
+
+### Run tests with coverage
+~~~shell
+tox -e coverage
 ~~~
