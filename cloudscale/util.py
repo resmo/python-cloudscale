@@ -60,7 +60,7 @@ def to_pretty_json(data: dict) -> tuple:
     result = highlight(result, lexers.JsonLexer(), formatters.TerminalFormatter())
     return result
 
-def to_dict(data: tuple) -> dict:
+def tags_to_dict(data: tuple) -> dict:
     '''
     Split a tuple of tags (key=value) into a dict.
     '''
@@ -69,7 +69,9 @@ def to_dict(data: tuple) -> dict:
 
     result = dict()
     for d in data:
-        if '=' in d:
-            k, v = d.split('=')
-            result[k] = v
+        if '=' not in d:
+            raise ValueError("Invalid tag '{}'. Use the format 'name=value'.".format(d))
+
+        k, v = d.split('=', maxsplit=1)
+        result[k] = v
     return result

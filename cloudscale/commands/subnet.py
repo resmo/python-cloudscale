@@ -1,7 +1,7 @@
-import sys
 import click
-from ..util import to_table, to_pretty_json
-from .. import Cloudscale, CloudscaleException, CloudscaleApiException
+from . import _init, _list, _show, _create, _update, _delete
+
+headers = ['uuid', 'cidr', 'network', 'tags']
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
@@ -9,32 +9,30 @@ from .. import Cloudscale, CloudscaleException, CloudscaleApiException
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
 def subnet(ctx, profile, api_token, verbose):
-    try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
-    except CloudscaleException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    _init(
+        ctx=ctx,
+        api_token=api_token,
+        profile=profile,
+        verbose=verbose,
+    )
 
+@click.option('--filter-tag')
 @subnet.command("list")
 @click.pass_obj
-def cmd_list(cloudscale):
-    try:
-        response = cloudscale.subnet.get_all()
-        if response:
-            headers = ['uuid', 'cidr', 'network', 'tags']
-            table = to_table(response, headers)
-            click.echo(table)
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+def cmd_list(cloudscale, filter_tag):
+    resource = cloudscale.subnet
+    _list(
+        resource=resource,
+        headers=headers,
+        filter_tag=filter_tag,
+    )
 
 @click.argument('uuid', required=True)
 @subnet.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
-    try:
-        response = cloudscale.subnet.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.subnet
+    _show(
+        resource=resource,
+        uuid=uuid,
+    )

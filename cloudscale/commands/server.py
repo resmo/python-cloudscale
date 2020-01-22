@@ -1,7 +1,5 @@
-import sys
 import click
-from ..util import to_table, to_pretty_json, to_dict
-from .. import Cloudscale, CloudscaleApiException, CloudscaleException
+from . import _init, _list, _show, _create, _update, _delete, _act
 
 headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
 
@@ -11,35 +9,33 @@ headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
 def server(ctx, profile, api_token, verbose):
-    try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
-    except CloudscaleException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    _init(
+        ctx=ctx,
+        api_token=api_token,
+        profile=profile,
+        verbose=verbose,
+    )
 
 @click.option('--filter-tag')
 @server.command("list")
 @click.pass_obj
 def cmd_list(cloudscale, filter_tag):
-    try:
-        response = cloudscale.server.get_all(filter_tag)
-        if response:
-            table = to_table(response, headers)
-            click.echo(table)
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _list(
+        resource=resource,
+        headers=headers,
+        filter_tag=filter_tag,
+    )
 
 @click.argument('uuid', required=True)
 @server.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
-    try:
-        response = cloudscale.server.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _show(
+        resource=resource,
+        uuid=uuid,
+    )
 
 @click.option('--name', required=True)
 @click.option('--flavor', required=True)
@@ -76,99 +72,88 @@ def cmd_create(
     user_data,
     tags,
 ):
-    try:
-        response = cloudscale.server.create(
-            name=name,
-            flavor=flavor,
-            image=image,
-            zone=zone,
-            volume_size=volume_size,
-            volumes=volumes or None,
-            interfaces=interfaces or None,
-            ssh_keys=ssh_keys or None,
-            password=password,
-            use_public_network=use_public_network,
-            use_private_network=use_private_network,
-            use_ipv6=use_ipv6,
-            server_groups=server_groups or None,
-            user_data=user_data,
-            tags=to_dict(tags),
-        )
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
-
+    resource = cloudscale.server
+    _create(
+        resource=resource,
+        name=name,
+        flavor=flavor,
+        image=image,
+        zone=zone,
+        volume_size=volume_size,
+        volumes=volumes or None,
+        interfaces=interfaces or None,
+        ssh_keys=ssh_keys or None,
+        password=password,
+        use_public_network=use_public_network,
+        use_private_network=use_private_network,
+        use_ipv6=use_ipv6,
+        server_groups=server_groups or None,
+        user_data=user_data,
+        tags=tags,
+    )
 
 @click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--flavor')
 @click.option('--tags', multiple=True)
+@click.option('--clear-tags', multiple=True)
+@click.option('--clear-all-tags', is_flag=True)
 @server.command("update")
 @click.pass_obj
-def cmd_update(cloudscale, uuid, name, flavor, tags):
-    try:
-        cloudscale.server.update(
-            uuid=uuid,
-            name=name,
-            flavor=flavor,
-            tags=to_dict(tags),
-        )
-        response = cloudscale.server.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+def cmd_update(cloudscale, uuid, name, flavor, tags, clear_tags, clear_all_tags):
+    resource = cloudscale.server
+    _update(
+        resource=resource,
+        uuid=uuid,
+        tags=tags,
+        clear_tags=clear_tags,
+        clear_all_tags=clear_all_tags,
+        name=name,
+        flavor=flavor,
+    )
 
 @click.argument('uuid', required=True)
 @click.option('--force', is_flag=True)
 @server.command("delete")
 @click.pass_obj
 def cmd_delete(cloudscale, uuid, force):
-    try:
-        response = cloudscale.server.get_by_uuid(uuid)
-        table = to_table([response], headers)
-        click.echo(table)
-        if not force:
-            click.confirm('Do you want to delete?', abort=True)
-        cloudscale.server.delete(uuid)
-        click.echo("Deleted!")
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _delete(
+        resource=resource,
+        uuid=uuid,
+        headers=headers,
+        force=force,
+    )
 
 @click.argument('uuid', required=True)
 @server.command("start")
 @click.pass_obj
 def cmd_start(cloudscale, uuid):
-    try:
-        cloudscale.server.start(uuid)
-        response = cloudscale.server.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _act(
+        resource=resource,
+        action="start",
+        uuid=uuid,
+    )
 
 @click.argument('uuid', required=True)
 @server.command("stop")
 @click.pass_obj
 def cmd_stop(cloudscale, uuid):
-    try:
-        cloudscale.server.stop(uuid)
-        response = cloudscale.server.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _act(
+        resource=resource,
+        action="stop",
+        uuid=uuid,
+    )
 
 @click.argument('uuid', required=True)
 @server.command("reboot")
 @click.pass_obj
 def cmd_reboot(cloudscale, uuid):
-    try:
-        cloudscale.server.reboot(uuid)
-        response = cloudscale.server.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.server
+    _act(
+        resource=resource,
+        action="reboot",
+        uuid=uuid,
+    )

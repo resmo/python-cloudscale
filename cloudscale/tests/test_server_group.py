@@ -257,6 +257,8 @@ def test_server_groups_update():
         'update',
         '--name',
         name,
+        '--clear-tags',
+        'foo',
         uuid,
     ])
     assert result.exit_code > 0
@@ -285,3 +287,103 @@ def test_server_group_missing_api_key():
         'list',
     ])
     assert result.exit_code == 1
+
+@responses.activate
+def test_invalid_tags_create():
+    name = "load balancers"
+    responses.add(
+        responses.POST,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups',
+        json=SERVER_GROUP_RESP,
+        status=201)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+        '--tags',
+        'foo',
+    ])
+    assert result.exit_code == 1
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+        '--tags',
+        'foo=',
+    ])
+    assert result.exit_code == 0
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'create',
+        '--name',
+        name,
+        '--tags',
+        'foo=bar=',
+    ])
+    assert result.exit_code == 0
+
+
+@responses.activate
+def test_invalid_tags_update():
+    uuid = "e3b63018-fad6-45f2-9f57-3ea0da726d8c"
+    name = "load balancers"
+    responses.add(
+        responses.PATCH,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=204)
+    responses.add(
+        responses.GET,
+        CLOUDSCALE_API_ENDPOINT + '/server-groups/' + uuid,
+        json=SERVER_GROUP_RESP,
+        status=200)
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'update',
+        '--name',
+        name,
+        uuid,
+        '--tags',
+        'foo',
+    ])
+    assert result.exit_code == 1
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'update',
+        '--name',
+        name,
+        uuid,
+        '--tags',
+        'foo=',
+    ])
+    assert result.exit_code == 0
+
+    runner = CliRunner()
+    result = runner.invoke(cli, [
+        'server-group',
+        '-a', 'token',
+        'update',
+        '--name',
+        name,
+        uuid,
+        '--tags',
+        'foo=bar=',
+    ])
+    assert result.exit_code == 0
