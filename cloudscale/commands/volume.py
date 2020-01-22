@@ -1,7 +1,5 @@
-import sys
 import click
-from ..util import to_table, to_pretty_json, to_dict
-from .. import Cloudscale, CloudscaleApiException, CloudscaleException
+from . import _init, _list, _show, _create, _update, _delete
 
 headers = ['name', 'type', 'size_gb', 'zone', 'tags', 'uuid']
 
@@ -11,35 +9,34 @@ headers = ['name', 'type', 'size_gb', 'zone', 'tags', 'uuid']
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.pass_context
 def volume(ctx, profile, api_token, verbose):
-    try:
-        ctx.obj = Cloudscale(api_token, profile, verbose)
-    except CloudscaleException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    _init(
+        ctx=ctx,
+        api_token=api_token,
+        profile=profile,
+        verbose=verbose,
+    )
 
 @click.option('--filter-tag')
 @volume.command("list")
 @click.pass_obj
 def cmd_list(cloudscale, filter_tag):
-    try:
-        response = cloudscale.volume.get_all(filter_tag)
-        if response:
-            table = to_table(response, headers)
-            click.echo(table)
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.volume
+    _list(
+        resource=resource,
+        headers=headers,
+        filter_tag=filter_tag,
+    )
+
 
 @click.argument('uuid', required=True)
 @volume.command("show")
 @click.pass_obj
 def cmd_show(cloudscale, uuid):
-    try:
-        response = cloudscale.volume.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.volume
+    _show(
+        resource=resource,
+        uuid=uuid,
+    )
 
 @click.option('--name', required=True)
 @click.option('--server-uuids', multiple=True, required=True)
@@ -50,55 +47,48 @@ def cmd_show(cloudscale, uuid):
 @volume.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, name, server_uuids, size_gb, volume_type, zone, tags):
-    try:
-        response = cloudscale.volume.create(
-            name=name,
-            server_uuids=server_uuids,
-            size_gb=size_gb,
-            volume_type=volume_type,
-            zone=zone,
-            tags=to_dict(tags),
-        )
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.volume
+    _create(
+        resource=resource,
+        name=name,
+        server_uuids=server_uuids,
+        size_gb=size_gb,
+        volume_type=volume_type,
+        zone=zone,
+        tags=tags,
+    )
 
 @click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--server-uuids', multiple=True)
 @click.option('--size-gb', type=int)
 @click.option('--tags', multiple=True)
+@click.option('--clear-tags', multiple=True)
+@click.option('--clear-all-tags', is_flag=True)
 @volume.command("update")
 @click.pass_obj
-def cmd_update(cloudscale, uuid, name, server_uuids, size_gb, tags):
-    try:
-        cloudscale.volume.update(
-            uuid=uuid,
-            name=name,
-            server_uuids=server_uuids,
-            size_gb=size_gb,
-            tags=to_dict(tags),
-        )
-        response = cloudscale.volume.get_by_uuid(uuid)
-        click.echo(to_pretty_json(response))
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+def cmd_update(cloudscale, uuid, name, server_uuids, size_gb, tags, clear_tags, clear_all_tags):
+    resource = cloudscale.volume
+    _update(
+        resource=resource,
+        uuid=uuid,
+        tags=tags,
+        clear_tags=clear_tags,
+        clear_all_tags=clear_all_tags,
+        name=name,
+        server_uuids=server_uuids,
+        size_gb=size_gb,
+    )
 
 @click.argument('uuid', required=True)
 @click.option('--force', is_flag=True)
 @volume.command("delete")
 @click.pass_obj
 def cmd_delete(cloudscale, uuid, force):
-    try:
-        response = cloudscale.volume.get_by_uuid(uuid)
-        table = to_table([response], headers)
-        click.echo(table)
-        if not force:
-            click.confirm('Do you want to delete?', abort=True)
-        cloudscale.volume.delete(uuid)
-        click.echo("Deleted!")
-    except CloudscaleApiException as e:
-        click.echo(e, err=True)
-        sys.exit(1)
+    resource = cloudscale.volume
+    _delete(
+        resource=resource,
+        uuid=uuid,
+        headers=headers,
+        force=force,
+    )

@@ -257,6 +257,8 @@ def test_server_groups_update():
         'update',
         '--name',
         name,
+        '--clear-tags',
+        'foo',
         uuid,
     ])
     assert result.exit_code > 0
