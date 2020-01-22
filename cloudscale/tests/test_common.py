@@ -5,6 +5,8 @@ from cloudscale import Cloudscale, CloudscaleApiException, CloudscaleException, 
 from cloudscale.cli import cli
 from click.testing import CliRunner
 from configparser import ConfigParser
+from ..util import tags_to_dict
+
 
 class TestClass():
 
