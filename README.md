@@ -137,10 +137,10 @@ cloudscale-cli server list --filter-tag project
 cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod
 ~~~
 
-#### Update server tags, remove a specific tag
+#### Update server tags, remove a specific tag key
 
 ~~~shell
-cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-tags status=wip
+cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-tags status
 ~~~
 
 #### Update server tags, remove other tags
