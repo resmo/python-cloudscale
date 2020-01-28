@@ -39,7 +39,7 @@ def cmd_show(cloudscale, network_id):
 
 @click.option('--ip-version', type=int, default=4, show_default=True)
 @click.option('--server-uuid', '--server', required=True)
-@click.option('--prefix-length', type=int, default=32, show_default=True)
+@click.option('--prefix-length', type=int, show_default=True)
 @click.option('--reverse-ptr')
 @click.option('--type', 'scope', type=click.Choice(['regional', 'global']), default='regional', show_default=True)
 @click.option('--region')
@@ -47,6 +47,12 @@ def cmd_show(cloudscale, network_id):
 @floating_ip.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, scope, region, tags):
+    if not prefix_length:
+        if ip_version == 6:
+            prefix_length = 128
+        else:
+            prefix_length = 32
+
     resource = cloudscale.floating_ip
     _create(
         resource=resource,
