@@ -42,8 +42,8 @@ def cmd_show(cloudscale, uuid):
 @click.option('--image', required=True)
 @click.option('--zone')
 @click.option('--volume-size', type=int, default=10)
-@click.option('--interfaces', multiple=True)
 @click.option('--volume', 'volumes', multiple=True)
+@click.option('--interface', 'interfaces', multiple=True)
 @click.option('--ssh-key', 'ssh_keys', multiple=True)
 @click.option('--password')
 @click.option('--use-public-network/--no-use-public-network', default=True)
@@ -95,12 +95,13 @@ def cmd_create(
 @click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--flavor')
+@click.option('--interface', 'interfaces', multiple=True)
 @click.option('--tag', 'tags', multiple=True)
 @click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @server.command("update")
 @click.pass_obj
-def cmd_update(cloudscale, uuid, name, flavor, tags, clear_tags, clear_all_tags):
+def cmd_update(cloudscale, uuid, name, flavor, interfaces, tags, clear_tags, clear_all_tags):
     resource = cloudscale.server
     _update(
         resource=resource,
@@ -110,6 +111,7 @@ def cmd_update(cloudscale, uuid, name, flavor, tags, clear_tags, clear_all_tags)
         clear_all_tags=clear_all_tags,
         name=name,
         flavor=flavor,
+        interfaces=interfaces,
     )
 
 @click.argument('uuid', required=True)
