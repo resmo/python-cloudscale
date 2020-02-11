@@ -38,7 +38,7 @@ def cmd_show(cloudscale, uuid):
     )
 
 @click.option('--display-name', required=True)
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @objects_user.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, display_name, tags):
@@ -51,8 +51,8 @@ def cmd_create(cloudscale, display_name, tags):
 
 @click.argument('uuid', required=True)
 @click.option('--display-name')
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @objects_user.command("update")
 @click.pass_obj

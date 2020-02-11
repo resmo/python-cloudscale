@@ -43,7 +43,7 @@ def cmd_show(cloudscale, network_id):
 @click.option('--reverse-ptr')
 @click.option('--type', 'scope', type=click.Choice(['regional', 'global']), default='regional', show_default=True)
 @click.option('--region')
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @floating_ip.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, scope, region, tags):
@@ -68,8 +68,8 @@ def cmd_create(cloudscale, ip_version, server_uuid, prefix_length, reverse_ptr, 
 @click.argument('network-id', required=True)
 @click.option('--server-uuid', '--server')
 @click.option('--reverse-ptr')
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @floating_ip.command("update")
 @click.pass_obj

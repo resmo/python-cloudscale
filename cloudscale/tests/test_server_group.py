@@ -257,7 +257,7 @@ def test_server_groups_update():
         'update',
         '--name',
         name,
-        '--clear-tags',
+        '--clear-tag',
         'foo',
         uuid,
     ])
@@ -304,7 +304,7 @@ def test_invalid_tags_create():
         'create',
         '--name',
         name,
-        '--tags',
+        '--tag',
         'foo',
     ])
     assert result.exit_code == 1
@@ -316,7 +316,7 @@ def test_invalid_tags_create():
         'create',
         '--name',
         name,
-        '--tags',
+        '--tag',
         'foo=',
     ])
     assert result.exit_code == 0
@@ -328,7 +328,7 @@ def test_invalid_tags_create():
         'create',
         '--name',
         name,
-        '--tags',
+        '--tag',
         'foo=bar=',
     ])
     assert result.exit_code == 0
@@ -357,7 +357,7 @@ def test_invalid_tags_update():
         '--name',
         name,
         uuid,
-        '--tags',
+        '--tag',
         'foo',
     ])
     assert result.exit_code == 1
@@ -370,7 +370,7 @@ def test_invalid_tags_update():
         '--name',
         name,
         uuid,
-        '--tags',
+        '--tag',
         'foo=',
     ])
     assert result.exit_code == 0
@@ -383,7 +383,7 @@ def test_invalid_tags_update():
         '--name',
         name,
         uuid,
-        '--tags',
+        '--tag',
         'foo=bar=',
     ])
     assert result.exit_code == 0
