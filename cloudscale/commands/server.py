@@ -1,7 +1,7 @@
 import click
 from . import _init, _list, _show, _create, _update, _delete, _act
 
-headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
+headers = ['name', 'image', 'flavor', 'zone', 'tags', 'server_groups', 'uuid', 'status']
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
