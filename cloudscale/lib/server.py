@@ -42,10 +42,11 @@ class Server(CloudscaleMutable):
         }
         return super().create(payload=payload)
 
-    def update(self, uuid, name=None, flavor=None, tags=None):
+    def update(self, uuid, name=None, flavor=None, interfaces=None, tags=None):
         payload = {
             'name': name,
             'flavor': flavor,
+            'interfaces': interfaces,
             'tags': tags,
         }
         return super().update(uuid=uuid, payload=payload)

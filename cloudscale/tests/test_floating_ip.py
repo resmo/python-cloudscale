@@ -206,6 +206,17 @@ def test_floating_ip_create():
         server_uuid,
     ])
     assert result.exit_code > 0
+    result = runner.invoke(cli, [
+        'floating-ip',
+        '-a', 'token',
+        'create',
+        '--ip-version',
+        6,
+        '--server-uuid',
+        server_uuid,
+    ])
+    assert result.exit_code > 0
+
 
 @responses.activate
 def test_floating_ip_update():

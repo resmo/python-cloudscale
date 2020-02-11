@@ -39,7 +39,7 @@ def cmd_show(cloudscale, uuid):
 
 @click.option('--name', required=True)
 @click.option('--type', 'group_type', default='anti-affinity', show_default=True)
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @server_group.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, name, group_type, tags):
@@ -53,8 +53,8 @@ def cmd_create(cloudscale, name, group_type, tags):
 
 @click.argument('uuid', required=True)
 @click.option('--name')
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @server_group.command("update")
 @click.pass_obj

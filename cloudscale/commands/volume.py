@@ -43,7 +43,7 @@ def cmd_show(cloudscale, uuid):
 @click.option('--size-gb', type=int, required=True)
 @click.option('--type', 'volume_type', type=click.Choice(['ssd', 'bulk']), default='ssd', show_default=True)
 @click.option('--zone')
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @volume.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, name, server_uuids, size_gb, volume_type, zone, tags):
@@ -62,8 +62,8 @@ def cmd_create(cloudscale, name, server_uuids, size_gb, volume_type, zone, tags)
 @click.option('--name')
 @click.option('--server-uuids', multiple=True)
 @click.option('--size-gb', type=int)
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @volume.command("update")
 @click.pass_obj

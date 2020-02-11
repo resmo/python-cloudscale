@@ -330,7 +330,7 @@ def test_server_update():
         'update',
         '--name',
         name,
-        '--tags',
+        '--tag',
         'project=gemini',
         uuid,
     ])
@@ -341,7 +341,7 @@ def test_server_update():
         'update',
         '--name',
         name,
-        '--tags',
+        '--tag',
         'project=gemini',
         uuid,
     ])

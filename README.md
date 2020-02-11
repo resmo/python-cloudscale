@@ -110,7 +110,7 @@ Commands:
 #### Create a server
 
 ~~~shell
-cloudscale-cli server create --flavor flex-2 --name my-server --image centos-7 --ssh-keys "$(cat ~/.ssh/id_rsa.pub)"
+cloudscale-cli server create --flavor flex-2 --name my-server --image centos-7 --ssh-key "$(cat ~/.ssh/id_rsa.pub)"
 ~~~
 
 #### List all servers
@@ -134,19 +134,19 @@ cloudscale-cli server list --filter-tag project
 #### Update servers tags (but keep all existing)
 
 ~~~shell
-cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod
+cloudscale-cli server update <uuid> --tag project=apollo --tag stage=prod
 ~~~
 
 #### Update server tags, remove a specific tag key
 
 ~~~shell
-cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-tags status
+cloudscale-cli server update <uuid> --tag project=apollo --tag stage=prod --clear-tag status
 ~~~
 
 #### Update server tags, remove other tags
 
 ~~~shell
-cloudscale-cli server update <uuid> --tags project=apollo --tags stage=prod --clear-all-tags
+cloudscale-cli server update <uuid> --tag project=apollo --tag stage=prod --clear-all-tags
 ~~~
 
 #### Stop a server

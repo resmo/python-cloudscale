@@ -1,7 +1,7 @@
 import click
 from . import _init, _list, _show, _create, _update, _delete, _act
 
-headers = ['name', 'flavor', 'zone', 'tags', 'uuid', 'status']
+headers = ['name', 'image', 'flavor', 'zone', 'tags', 'server_groups', 'uuid', 'status']
 
 @click.group()
 @click.option('--api-token', '-a', envvar='CLOUDSCALE_API_TOKEN', help="API token.")
@@ -41,17 +41,17 @@ def cmd_show(cloudscale, uuid):
 @click.option('--flavor', required=True)
 @click.option('--image', required=True)
 @click.option('--zone')
-@click.option('--volume-size', type=int)
-@click.option('--volumes', multiple=True)
-@click.option('--interfaces', multiple=True)
-@click.option('--ssh-keys', multiple=True)
+@click.option('--volume-size', type=int, default=10)
+@click.option('--volume', 'volumes', multiple=True)
+@click.option('--interface', 'interfaces', multiple=True)
+@click.option('--ssh-key', 'ssh_keys', multiple=True)
 @click.option('--password')
-@click.option('--use-public-network', is_flag=True, default=True)
-@click.option('--use-private-network', is_flag=True)
-@click.option('--use-ipv6', is_flag=True)
-@click.option('--server-groups', multiple=True)
+@click.option('--use-public-network/--no-use-public-network', default=True)
+@click.option('--use-private-network/--no-use-private-network', default=False)
+@click.option('--use-ipv6/--no-use-ipv6', default=True)
+@click.option('--server-group', 'server_groups', multiple=True)
 @click.option('--user-data')
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @server.command("create")
 @click.pass_obj
 def cmd_create(
@@ -95,12 +95,13 @@ def cmd_create(
 @click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--flavor')
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--interface', 'interfaces', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @server.command("update")
 @click.pass_obj
-def cmd_update(cloudscale, uuid, name, flavor, tags, clear_tags, clear_all_tags):
+def cmd_update(cloudscale, uuid, name, flavor, interfaces, tags, clear_tags, clear_all_tags):
     resource = cloudscale.server
     _update(
         resource=resource,
@@ -110,6 +111,7 @@ def cmd_update(cloudscale, uuid, name, flavor, tags, clear_tags, clear_all_tags)
         clear_all_tags=clear_all_tags,
         name=name,
         flavor=flavor,
+        interfaces=interfaces,
     )
 
 @click.argument('uuid', required=True)

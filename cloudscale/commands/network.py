@@ -41,7 +41,7 @@ def cmd_show(cloudscale, uuid):
 @click.option('--zone')
 @click.option('--mtu', type=int, default=9000)
 @click.option('--auto-create-ipv4-subnet', type=bool, default=True)
-@click.option('--tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
 @network.command("create")
 @click.pass_obj
 def cmd_create(cloudscale, name, zone, mtu, auto_create_ipv4_subnet, tags):
@@ -58,8 +58,8 @@ def cmd_create(cloudscale, name, zone, mtu, auto_create_ipv4_subnet, tags):
 @click.argument('uuid', required=True)
 @click.option('--name')
 @click.option('--mtu', type=int)
-@click.option('--tags', multiple=True)
-@click.option('--clear-tags', multiple=True)
+@click.option('--tag', 'tags', multiple=True)
+@click.option('--clear-tag', 'clear_tags', multiple=True)
 @click.option('--clear-all-tags', is_flag=True)
 @network.command("update")
 @click.pass_obj

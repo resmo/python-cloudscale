@@ -47,8 +47,9 @@ def _update(resource, uuid, tags, clear_tags, clear_all_tags, **kwargs):
     try:
         _tags = dict()
         if not clear_all_tags:
-            server_group = resource.get_by_uuid(uuid=uuid)
-            _tags = server_group['tags'].copy()
+            response = resource.get_by_uuid(uuid=uuid)
+            _tags = response.get('tags', dict()).copy()
+
             for k in clear_tags:
                 _tags.pop(k, None)
 
