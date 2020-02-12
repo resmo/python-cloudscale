@@ -1,0 +1,4 @@
+include *.txt
+include *.yml
+include tox.ini
+global-exclude *.py[cod]
