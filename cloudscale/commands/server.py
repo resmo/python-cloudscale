@@ -111,7 +111,7 @@ def cmd_update(cloudscale, uuid, name, flavor, interfaces, tags, clear_tags, cle
         clear_all_tags=clear_all_tags,
         name=name,
         flavor=flavor,
-        interfaces=interfaces,
+        interfaces=interfaces or None,
     )
 
 @click.argument('uuid', required=True)
