@@ -1,11 +1,13 @@
+:warning: :warning: :warning: Development moved to https://github.com/cloudscale-ch/python-cloudscale/ :warning: :warning: :warning: 
+
+---
+
 ![license](https://img.shields.io/pypi/l/cloudscale.svg)
 ![python versions](https://img.shields.io/pypi/pyversions/cloudscale.svg)
 ![status](https://img.shields.io/pypi/status/cloudscale.svg)
 [![pypi version](https://img.shields.io/pypi/v/cloudscale.svg)](https://pypi.org/project/cloudscale/)
 ![PyPI - Downloads](https://img.shields.io/pypi/dw/cloudscale)
 [![codecov](https://codecov.io/gh/resmo/python-cloudscale/branch/master/graph/badge.svg)](https://codecov.io/gh/resmo/python-cloudscale)
-
-
 
 # Cloudscale
 
